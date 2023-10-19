@@ -1,0 +1,11 @@
+#!name= 中国电信流量接口
+#!desc= 查询中国电信流量接口服务  http://10000.json 查询电信日志 http://10000.log 
+#!icon=https://raw.githubusercontent.com/FaintGhost/files/main/img/telecom.png
+
+[General]
+force-http-engine-hosts = 10000.log 10000.json
+
+[Script]
+http-request ^https?:\/\/10000\.(json|log) script-path=https://raw.githubusercontent.com/gsons/boxjs/main/dist/telecom.js?v=jjh3, requires-body=true, tag=telecom-http-service_6
+
+cron "*/5 * * * *" script-path=https://raw.githubusercontent.com/gsons/boxjs/main/dist/telecom.js?v=jjh3, timeout=60, tag=telecom-for-cron
