@@ -1,0 +1,9 @@
+#!name=Nicegram 会员解锁
+#!desc=在APP内点击恢复购买
+#!icon=https://raw.githubusercontent.com/FaintGhost/files/main/img/nicegram.png
+
+[Script]
+http-request https?:\/\/restore-access\.indream\.app\/restoreAccess\?id=\d{5,10} script-path=https://github.com/ddgksf2013/dev/raw/main/NicegramProCrack.js, timeout=60, tag=NicegramProCrack.js_16
+
+[MITM]
+hostname = restore-access.indream.app
