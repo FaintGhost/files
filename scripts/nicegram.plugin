@@ -3,7 +3,7 @@
 #!icon=https://raw.githubusercontent.com/FaintGhost/files/main/img/nicegram.png
 
 [Script]
-http-request https?:\/\/restore-access\.indream\.app\/restoreAccess\?id=\d{5,10} script-path=https://github.com/ddgksf2013/dev/raw/main/NicegramProCrack.js, timeout=60, tag=NicegramProCrack.js_16
+http-request https?:\/\/restore-access\.indream\.app\/restoreAccess\?id=\d{5,10} script-path=http://script.hub/convert/_start_/https://github.com/ddgksf2013/dev/raw/main/NicegramProCrack.js/_end_/NicegramProCrack.js?type=mock&target-app=loon-plugin&contentType=text%2Fjson, timeout=60, tag=NicegramProCrack.js
 
 [MITM]
 hostname = restore-access.indream.app
