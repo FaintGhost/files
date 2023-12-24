@@ -3,13 +3,6 @@
     "level": "info",
     "timestamp": true
   },
-  "ntp": {
-    "enabled": true,
-    "server": "time.apple.com",
-    "server_port": 123,
-    "interval": "30m",
-    "detour": "direct"
-  },
   "experimental": {
     "clash_api": {
       "external_controller": "0.0.0.0:9090",
@@ -111,9 +104,16 @@
         "http_proxy": {
           "enabled": true,
           "server": "127.0.0.1",
-          "server_port": 2080
+          "server_port": 2081
         }
       }
+    },
+    {
+      "type": "http",
+      "listen": "127.0.0.1",
+      "listen_port": 2081,
+      "sniff": true,
+      "users": []
     },
     {
       "type": "mixed",
@@ -459,6 +459,12 @@
           {
             "port": [
               22
+            ]
+          },
+          {
+            "process_name": [
+              "aria2c.exe",
+              "localsend_app.exe"
             ]
           }
         ],
