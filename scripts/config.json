@@ -503,11 +503,10 @@
             ]
           },
           {
-            "domain_suffix": [
-              "novastar.tech",
-              "novastar.online",
-              "novaicare.com",
-              "vnnox.com"
+            "domain_keyword": [
+              "novastar",
+              "novaicare",
+              "vnnox"
             ]
           }
         ],
