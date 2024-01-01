@@ -87,13 +87,12 @@
         "server": "proxyDns"
       }
     ],
-    "strategy": "prefer_ipv4"
+    "strategy": "ipv4_only"
   },
   "inbounds": [
     {
       "type": "tun",
       "inet4_address": "172.19.0.1/30",
-      "inet6_address": "fdfe:dcba:9876::1/126",
       "mtu": 9000,
       "gso": false,
       "auto_route": true,
@@ -432,8 +431,17 @@
         "outbound": "dns-out"
       },
       {
-        "network": "udp",
-        "port": 443,
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "network": "udp",
+            "port": 443
+          },
+          {
+            "protocol": "stun"
+          }
+        ],
         "outbound": "block"
       },
       {
