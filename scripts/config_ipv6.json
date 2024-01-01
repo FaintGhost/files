@@ -45,11 +45,8 @@
       ],
       "rules": [
         {
-          "domain": [
-            "oa.novastar.tech",
-            "ehr.novastar.tech",
-            "nas.novastar.online",
-            "epros.novastar.tech"
+          "domain_keyword": [
+            "novastar"
           ],
           "server": "novastarDns"
         },
