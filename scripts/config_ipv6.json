@@ -480,7 +480,9 @@
           {
             "process_name": [
               "aria2c.exe",
-              "localsend_app.exe"
+              "localsend_app.exe",
+              "SunloginClient.exe",
+              "sunlogin_guard.exe"
             ]
           }
         ],
