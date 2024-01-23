@@ -479,7 +479,12 @@
           {
             "process_name": [
               "aria2c.exe",
-              "localsend_app.exe"
+              "localsend_app.exe",
+              "rustdesk.exe",
+              "SunloginClient.exe",
+              "ToDesk.exe",
+              "TeamViewer.exe",
+              "TeamViewer_Service.exe"
             ]
           }
         ],
