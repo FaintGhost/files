@@ -140,6 +140,19 @@
       ]
     },
     {
+      "tag": "Personal",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "novastar",
+        "🇭🇰 香港节点",
+        "🇹🇼 台湾节点",
+        "🇸🇬 狮城节点",
+        "🇯🇵 日本节点",
+        "🇺🇸 美国节点"
+      ]
+    },
+    {
       "tag": "🤖 OpenAI",
       "type": "selector",
       "outbounds": [
@@ -416,6 +429,10 @@
     "final": "proxy",
     "rules": [
       {
+        "rule_set": "geosite-personal",
+        "outbound": "Personal"
+      },
+      {
         "type": "logical",
         "mode": "or",
         "rules": [
@@ -633,6 +650,13 @@
       }
     ],
     "rule_set": [
+      {
+        "tag": "geosite-personal",
+        "type": "remote",
+        "format": "source",
+        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/personal.json",
+        "download_detour": "auto"
+      },
       {
         "tag": "geoip-google",
         "type": "remote",
