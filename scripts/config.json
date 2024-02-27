@@ -434,6 +434,10 @@
         "outbound": "Personal"
       },
       {
+        "rule_set": "geosite-novastar",
+        "outbound": "novastar"
+      },
+      {
         "type": "logical",
         "mode": "or",
         "rules": [
@@ -508,50 +512,6 @@
           }
         ],
         "outbound": "direct"
-      },
-      {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          {
-            "ip_cidr": [
-              "172.16.81.12",
-              "172.16.81.222",
-              "172.16.81.226",
-              "172.16.81.213",
-              "172.16.81.66",
-              "10.20.112.65",
-              "10.20.112.64",
-              "10.20.112.61",
-              "10.20.112.63",
-              "10.20.112.62",
-              "10.20.112.66",
-              "10.20.113.22",
-              "10.20.113.20",
-              "10.20.113.21",
-              "10.20.113.23",
-              "10.20.113.24",
-              "10.20.113.19",
-              "10.20.112.32",
-              "10.20.112.16",
-              "10.20.112.17",
-              "10.20.112.31",
-              "10.20.112.34",
-              "10.20.112.35",
-              "10.20.112.22",
-              "10.20.112.12",
-              "10.20.112.21"
-            ]
-          },
-          {
-            "domain_keyword": [
-              "novastar",
-              "novaicare",
-              "vnnox"
-            ]
-          }
-        ],
-        "outbound": "novastar"
       },
       {
         "rule_set": "geosite-openai",
@@ -658,6 +618,13 @@
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/personal.json",
         "download_detour": "auto"
       },
+      {
+        "tag": "geosite-novastar",
+        "type": "remote",
+        "format": "source",
+        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/novastar.json",
+        "download_detour": "auto"
+      },    
       {
         "tag": "geoip-google",
         "type": "remote",
