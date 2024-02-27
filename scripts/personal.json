@@ -1,8 +1,17 @@
 {
-    "version": 1,
-    "rules": [
-      {
-        "process_name": ["Longbridge Pro.exe"]
-      }
-    ]
-  }
+  "version": 1,
+  "rules": [
+    {
+      "process_name": [
+        "Longbridge Pro.exe",
+        "aria2c.exe",
+        "localsend_app.exe",
+        "rustdesk.exe",
+        "SunloginClient.exe",
+        "ToDesk.exe",
+        "TeamViewer.exe",
+        "TeamViewer_Service.exe"
+      ]
+    }
+  ]
+}

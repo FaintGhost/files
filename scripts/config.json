@@ -430,14 +430,6 @@
     "final": "proxy",
     "rules": [
       {
-        "rule_set": "geosite-personal",
-        "outbound": "Personal"
-      },
-      {
-        "rule_set": "geosite-novastar",
-        "outbound": "novastar"
-      },
-      {
         "type": "logical",
         "mode": "or",
         "rules": [
@@ -465,6 +457,14 @@
         "outbound": "block"
       },
       {
+        "rule_set": "geosite-personal",
+        "outbound": "Personal"
+      },
+      {
+        "rule_set": "geosite-novastar",
+        "outbound": "novastar"
+      },
+      {
         "rule_set": "geosite-category-ads-all",
         "outbound": "🛑 AdBlock"
       },
@@ -489,25 +489,8 @@
             ]
           },
           {
-            "domain_keyword": [
-              "duolingo",
-              "teamviewer"
-            ]
-          },
-          {
             "port": [
               22
-            ]
-          },
-          {
-            "process_name": [
-              "aria2c.exe",
-              "localsend_app.exe",
-              "rustdesk.exe",
-              "SunloginClient.exe",
-              "ToDesk.exe",
-              "TeamViewer.exe",
-              "TeamViewer_Service.exe"
             ]
           }
         ],
