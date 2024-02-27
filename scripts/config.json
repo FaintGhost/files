@@ -144,6 +144,7 @@
       "type": "selector",
       "outbounds": [
         "direct",
+        "lighthouse",
         "novastar",
         "🇭🇰 香港节点",
         "🇹🇼 台湾节点",
