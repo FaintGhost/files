@@ -140,15 +140,6 @@
       ]
     },
     {
-      "tag": "Switch",
-      "type": "selector",
-      "outbounds": [
-        "block",
-        "direct",
-        "proxy"
-      ]
-    },
-    {
       "tag": "Personal",
       "type": "selector",
       "outbounds": [
@@ -460,8 +451,18 @@
         "outbound": "dns-out"
       },
       {
-        "rule_set": "geosite-switch",
-        "outbound": "Switch"        
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "network": "udp",
+            "port": 443
+          },
+          {
+            "protocol": "stun"
+          }
+        ],
+        "outbound": "block"
       },
       {
         "rule_set": "geosite-personal",
@@ -602,13 +603,6 @@
     ],
     "rule_set": [
       {
-        "tag": "geosite-switch",
-        "type": "remote",
-        "format": "source",
-        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/switch.json",
-        "download_detour": "auto"
-      },
-      {
         "tag": "geosite-personal",
         "type": "remote",
         "format": "source",
@@ -621,7 +615,7 @@
         "format": "source",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/novastar.json",
         "download_detour": "auto"
-      },    
+      },
       {
         "tag": "geoip-google",
         "type": "remote",
