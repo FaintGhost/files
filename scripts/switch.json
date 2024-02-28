@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "protocol": [
+        "stun"
+      ]
+    },
+    {
+      "network": [
+        "udp"
+      ]
+    },
+    {
+      "port": [
+        443
+      ]
+    }
+  ]
+}
