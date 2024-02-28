@@ -154,6 +154,14 @@
       ]
     },
     {
+      "tag": "NovaStar",
+      "type": "selector",
+      "outbounds": [
+        "novastar",
+        "direct"
+      ]
+    },
+    {
       "tag": "🤖 OpenAI",
       "type": "selector",
       "outbounds": [
@@ -462,7 +470,7 @@
       },
       {
         "rule_set": "geosite-novastar",
-        "outbound": "novastar"
+        "outbound": "NovaStar"
       },
       {
         "rule_set": "geosite-category-ads-all",
