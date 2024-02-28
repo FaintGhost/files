@@ -2,9 +2,6 @@
   "version": 1,
   "rules": [
     {
-      "protocol": "dns"
-    },
-    {
       "network": [
         "udp"
       ]
