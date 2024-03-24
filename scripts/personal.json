@@ -12,6 +12,11 @@
         "TeamViewer.exe",
         "TeamViewer_Service.exe"
       ]
+    },
+    {
+      "ip_cidr": [
+        "144.24.84.28"
+      ]
     }
   ]
 }
