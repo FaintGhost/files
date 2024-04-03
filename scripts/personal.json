@@ -10,12 +10,19 @@
         "SunloginClient.exe",
         "ToDesk.exe",
         "TeamViewer.exe",
-        "TeamViewer_Service.exe"
+        "TeamViewer_Service.exe",
+        "parsecd.exe",
+        "pservice.exe"
       ]
     },
     {
       "ip_cidr": [
         "144.24.84.28"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "parsec"
       ]
     }
   ]
