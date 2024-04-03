@@ -518,7 +518,8 @@
       {
         "rule_set": [
           "geoip-apple",
-          "geosite-apple"
+          "geosite-apple",
+          "geosite-applemusic"
         ],
         "outbound": "🍎 Apple"
       },
@@ -618,6 +619,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo-lite/geoip/apple.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-applemusic",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo-lite/geosite/applemusic.srs",
         "download_detour": "direct"
       },
       {
