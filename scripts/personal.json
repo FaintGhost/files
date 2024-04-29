@@ -16,6 +16,11 @@
       ]
     },
     {
+      "package_name": [
+        "com.idormy.sms.forwarder"
+      ]
+    },
+    {
       "ip_cidr": [
         "144.24.84.28"
       ]
