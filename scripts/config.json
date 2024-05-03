@@ -110,6 +110,21 @@
   ],
   "outbounds": [
     {
+      "tag": "落地节点",
+      "type": "selector",
+      "outbounds": [
+        "{all}"
+      ],
+      "filter": [
+        {
+          "action": "include",
+          "keywords": [
+            "landing"
+          ]
+        }
+      ]
+    },
+    {
       "tag": "proxy",
       "type": "selector",
       "outbounds": [
@@ -121,7 +136,7 @@
         {
           "action": "exclude",
           "keywords": [
-            "novastar|lighthouse"
+            "novastar|lighthouse|landing"
           ]
         }
       ]
@@ -136,7 +151,7 @@
         {
           "action": "exclude",
           "keywords": [
-            "novastar|lighthouse"
+            "novastar|lighthouse|landing"
           ]
         }
       ],
@@ -154,6 +169,12 @@
       "interval": "5m",
       "tolerance": 50,
       "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "landing"
+          ]
+        },
         {
           "action": "include",
           "keywords": [
@@ -173,6 +194,12 @@
       "tolerance": 50,
       "filter": [
         {
+          "action": "exclude",
+          "keywords": [
+            "landing"
+          ]
+        },
+        {
           "action": "include",
           "keywords": [
             "🇹🇼|TW|tw|台湾|臺灣|台|Taiwan"
@@ -190,6 +217,12 @@
       "interval": "5m",
       "tolerance": 50,
       "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "landing"
+          ]
+        },
         {
           "action": "include",
           "keywords": [
@@ -209,6 +242,12 @@
       "tolerance": 50,
       "filter": [
         {
+          "action": "exclude",
+          "keywords": [
+            "landing"
+          ]
+        },
+        {
           "action": "include",
           "keywords": [
             "🇯🇵|JP|jp|日本|日|Japan"
@@ -226,6 +265,12 @@
       "interval": "5m",
       "tolerance": 50,
       "filter": [
+        {
+          "action": "exclude",
+          "keywords": [
+            "landing"
+          ]
+        },
         {
           "action": "include",
           "keywords": [
