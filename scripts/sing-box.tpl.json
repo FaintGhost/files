@@ -141,9 +141,7 @@
     {
       "tag": "auto",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": [],
       "filter": [
         {
           "action": "exclude",
@@ -159,9 +157,7 @@
     {
       "tag": "🇭🇰 香港节点",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
       "tolerance": 50,
@@ -183,9 +179,7 @@
     {
       "tag": "🇹🇼 台湾节点",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
       "tolerance": 50,
@@ -207,9 +201,7 @@
     {
       "tag": "🇸🇬 狮城节点",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
       "tolerance": 50,
@@ -231,9 +223,7 @@
     {
       "tag": "🇯🇵 日本节点",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
       "tolerance": 50,
@@ -255,9 +245,7 @@
     {
       "tag": "🇺🇸 美国节点",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
       "tolerance": 50,
