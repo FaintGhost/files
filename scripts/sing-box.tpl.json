@@ -112,9 +112,7 @@
     {
       "tag": "落地节点",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": [],
       "filter": [
         {
           "action": "include",
@@ -129,8 +127,7 @@
       "type": "selector",
       "outbounds": [
         "auto",
-        "direct",
-        "{all}"
+        "direct"
       ],
       "filter": [
         {
