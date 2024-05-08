@@ -112,15 +112,7 @@
     {
       "tag": "落地节点",
       "type": "selector",
-      "outbounds": [],
-      "filter": [
-        {
-          "action": "include",
-          "keywords": [
-            "landing"
-          ]
-        }
-      ]
+      "outbounds": []
     },
     {
       "tag": "proxy",
@@ -128,28 +120,12 @@
       "outbounds": [
         "auto",
         "direct"
-      ],
-      "filter": [
-        {
-          "action": "exclude",
-          "keywords": [
-            "lighthouse|novastar|landing"
-          ]
-        }
       ]
     },
     {
       "tag": "auto",
       "type": "urltest",
       "outbounds": [],
-      "filter": [
-        {
-          "action": "exclude",
-          "keywords": [
-            "lighthouse|novastar|landing"
-          ]
-        }
-      ],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
       "tolerance": 50
@@ -160,21 +136,7 @@
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
-      "tolerance": 50,
-      "filter": [
-        {
-          "action": "exclude",
-          "keywords": [
-            "landing"
-          ]
-        },
-        {
-          "action": "include",
-          "keywords": [
-            "🇭🇰|HK|hk|香港|港|HongKong"
-          ]
-        }
-      ]
+      "tolerance": 50
     },
     {
       "tag": "🇹🇼 台湾节点",
@@ -182,21 +144,7 @@
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
-      "tolerance": 50,
-      "filter": [
-        {
-          "action": "exclude",
-          "keywords": [
-            "landing"
-          ]
-        },
-        {
-          "action": "include",
-          "keywords": [
-            "🇹🇼|TW|tw|台湾|臺灣|台|Taiwan"
-          ]
-        }
-      ]
+      "tolerance": 50
     },
     {
       "tag": "🇸🇬 狮城节点",
@@ -204,21 +152,7 @@
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
-      "tolerance": 50,
-      "filter": [
-        {
-          "action": "exclude",
-          "keywords": [
-            "landing"
-          ]
-        },
-        {
-          "action": "include",
-          "keywords": [
-            "🇸🇬|SG|sg|新加坡|狮|Singapore"
-          ]
-        }
-      ]
+      "tolerance": 50
     },
     {
       "tag": "🇯🇵 日本节点",
@@ -226,21 +160,7 @@
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
-      "tolerance": 50,
-      "filter": [
-        {
-          "action": "exclude",
-          "keywords": [
-            "landing"
-          ]
-        },
-        {
-          "action": "include",
-          "keywords": [
-            "🇯🇵|JP|jp|日本|日|Japan"
-          ]
-        }
-      ]
+      "tolerance": 50
     },
     {
       "tag": "🇺🇸 美国节点",
@@ -248,21 +168,7 @@
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "5m",
-      "tolerance": 50,
-      "filter": [
-        {
-          "action": "exclude",
-          "keywords": [
-            "landing"
-          ]
-        },
-        {
-          "action": "include",
-          "keywords": [
-            "美国|美"
-          ]
-        }
-      ]
+      "tolerance": 50
     },
     {
       "tag": "Personal",
