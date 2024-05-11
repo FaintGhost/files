@@ -502,7 +502,7 @@
         "outbound": "🧩 Microsoft"
       },
       {
-        "rule_set": "geosite-steam",
+        "rule_set": "geosite-category-games",
         "outbound": "🎮 Game"
       },
       {
