@@ -21,7 +21,7 @@
     "servers": [
       {
         "tag": "localDns",
-        "address": "tls://1.1.1.1",
+        "address": "1.1.1.1",
         "detour": "direct"
       },
       {
@@ -74,20 +74,6 @@
           "server_port": 2081
         }
       }
-    },
-    {
-      "type": "http",
-      "listen": "127.0.0.1",
-      "listen_port": 2081,
-      "sniff": true,
-      "users": []
-    },
-    {
-      "type": "mixed",
-      "listen": "0.0.0.0",
-      "listen_port": 2080,
-      "sniff": true,
-      "users": []
     }
   ],
   "outbounds": [
