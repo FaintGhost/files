@@ -416,7 +416,7 @@
           "www.novastar-led.cn"
         ],
         "outbound": "direct"
-      }
+      },
       {
         "rule_set": "geosite-personal",
         "outbound": "Personal"
