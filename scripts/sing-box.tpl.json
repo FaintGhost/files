@@ -405,12 +405,18 @@
         "outbound": "dns-out"
       },
       {
-        "domain":[
+        "domain": [
           "www.novastar.tech",
           "drive.novastar.wiki"
         ],
         "outbound": "proxy"
       },
+      {
+        "domain": [
+          "www.novastar-led.cn"
+        ],
+        "outbound": "direct"
+      }
       {
         "rule_set": "geosite-personal",
         "outbound": "Personal"
