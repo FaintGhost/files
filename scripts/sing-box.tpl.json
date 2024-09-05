@@ -217,13 +217,68 @@
       "tag": "🌌 Google",
       "type": "selector",
       "outbounds": [
+        "落地节点",
+        "🇭🇰 香港节点",
+        "🇹🇼 台湾节点",
+        "🇸🇬 狮城节点",
+        "🇯🇵 日本节点",
+        "🇰🇷 韩国节点",
+        "🇺🇸 美国节点"
+      ]
+    },
+    {
+      "tag": "🐙 GitHub",
+      "type": "selector",
+      "outbounds": [
+        "落地节点",
+        "🇭🇰 香港节点",
+        "🇹🇼 台湾节点",
+        "🇸🇬 狮城节点",
+        "🇯🇵 日本节点",
+        "🇰🇷 韩国节点",
+        "🇺🇸 美国节点"
+      ]
+    },
+    {
+      "tag": "🍎 Apple",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "落地节点",
+        "🇭🇰 香港节点",
+        "🇹🇼 台湾节点",
+        "🇸🇬 狮城节点",
+        "🇯🇵 日本节点",
+        "🇰🇷 韩国节点",
+        "🇺🇸 美国节点"
+      ]
+    },
+    {
+      "tag": "💿 OneDrive",
+      "type": "selector",
+      "outbounds": [
+        "落地节点",
         "🇭🇰 香港节点",
         "🇹🇼 台湾节点",
         "🇸🇬 狮城节点",
         "🇯🇵 日本节点",
         "🇰🇷 韩国节点",
         "🇺🇸 美国节点",
-        "落地节点"
+        "direct"
+      ]
+    },
+    {
+      "tag": "🧩 Microsoft",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "落地节点",
+        "🇭🇰 香港节点",
+        "🇹🇼 台湾节点",
+        "🇸🇬 狮城节点",
+        "🇯🇵 日本节点",
+        "🇰🇷 韩国节点",
+        "🇺🇸 美国节点"
       ]
     },
     {
@@ -267,34 +322,6 @@
     },
     {
       "tag": "🛍️ Amazon",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇰🇷 韩国节点",
-        "🇺🇸 美国节点",
-        "落地节点"
-      ]
-    },
-    {
-      "tag": "🍎 Apple",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇰🇷 韩国节点",
-        "🇺🇸 美国节点"
-      ]
-    },
-    {
-      "tag": "🧩 Microsoft",
       "type": "selector",
       "outbounds": [
         "direct",
@@ -404,7 +431,10 @@
         "outbound": "direct"
       },
       {
-        "rule_set": "geosite-personal",
+        "rule_set": [
+          "geosite-personal",
+          "geosite-teamviewer"
+        ],
         "outbound": "Personal"
       },
       {
@@ -454,11 +484,37 @@
         "rule_set": [
           "geosite-youtube",
           "geoip-google",
-          "geosite-google",
-          "geosite-github"
+          "geosite-google"
         ],
         "outbound": "🌌 Google"
       },
+      {
+        "rule_set": [
+          "geosite-github",
+          "geosite-container",
+          "geosite-docker"
+        ],
+        "outbound": "🐙 GitHub"
+      },
+      {
+        "rule_set": [
+          "geoip-apple",
+          "geosite-apple",
+          "geosite-applemusic"
+        ],
+        "outbound": "🍎 Apple"
+      },
+      {
+        "rule_set": [
+          "geosite-onedrive"
+        ],
+        "outbound": "💿 OneDrive"
+      },
+      {
+        "rule_set": "geosite-microsoft",
+        "outbound": "🧩 Microsoft"
+      },
+
       {
         "rule_set": [
           "geoip-telegram",
@@ -483,18 +539,6 @@
       {
         "rule_set": "geosite-amazon",
         "outbound": "🛍️ Amazon"
-      },
-      {
-        "rule_set": [
-          "geoip-apple",
-          "geosite-apple",
-          "geosite-applemusic"
-        ],
-        "outbound": "🍎 Apple"
-      },
-      {
-        "rule_set": "geosite-microsoft",
-        "outbound": "🧩 Microsoft"
       },
       {
         "rule_set": [
@@ -644,6 +688,20 @@
         "download_detour": "direct"
       },
       {
+        "tag": "geosite-container",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-container.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-docker",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/docker.srs",
+        "download_detour": "direct"
+      },
+      {
         "tag": "geosite-telegram",
         "type": "remote",
         "format": "binary",
@@ -707,6 +765,13 @@
         "download_detour": "direct"
       },
       {
+        "tag": "geosite-onedrive",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/onedrive.srs",
+        "download_detour": "direct"
+      },
+      {
         "tag": "geosite-microsoft",
         "type": "remote",
         "format": "binary",
@@ -718,6 +783,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/steam@cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-teamviewer",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/teamviewer.srs",
         "download_detour": "direct"
       },
       {
