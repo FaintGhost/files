@@ -2,12 +2,6 @@
   "version": 1,
   "rules": [
     {
-      "process_name": [
-        "WXWork.exe",
-        "WXWorkWeb.exe"
-      ]
-    },
-    {
       "ip_cidr": [
         "172.16.81.12",
         "172.16.81.222",
