@@ -444,13 +444,9 @@
         "outbound": "direct"
       },
       {
-        "rule_set": "geosite-openai",
-        "outbound": "🤖 OpenAI"
-      },
-      {
-        "domain_suffix": [
-          ".anthropic.com",
-          ".claude.ai"
+        "rule_set": [
+          "geosite-openai",
+          "geosite-claude"
         ],
         "outbound": "🤖 OpenAI"
       },
@@ -616,7 +612,14 @@
         "tag": "geosite-openai",
         "type": "remote",
         "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo-lite/geosite/openai.srs",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/openai.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-claude",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/anthropic.srs",
         "download_detour": "direct"
       },
       {
