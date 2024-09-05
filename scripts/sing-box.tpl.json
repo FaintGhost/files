@@ -308,20 +308,6 @@
       ]
     },
     {
-      "tag": "🎮 Game",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇰🇷 韩国节点",
-        "🇺🇸 美国节点"
-      ]
-    },
-    {
       "tag": "📺 Bilibili",
       "type": "selector",
       "outbounds": [
@@ -515,10 +501,6 @@
         "outbound": "🧩 Microsoft"
       },
       {
-        "rule_set": "geosite-category-games",
-        "outbound": "🎮 Game"
-      },
-      {
         "rule_set": [
           "geoip-bilibili",
           "geosite-bilibili"
@@ -546,7 +528,8 @@
       {
         "rule_set": [
           "geoip-cn",
-          "geosite-cn"
+          "geosite-cn",
+          "geosite-steam@cn"
         ],
         "outbound": "🌏 cn"
       }
@@ -728,10 +711,10 @@
         "download_detour": "direct"
       },
       {
-        "tag": "geosite-category-games",
+        "tag": "geosite-steam@cn",
         "type": "remote",
         "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-games.srs",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/steam@cn.srs",
         "download_detour": "direct"
       },
       {
