@@ -425,8 +425,8 @@
         "outbound": "proxy"
       },
       {
-        "domain": [
-          "www.novastar-led.cn"
+        "domain_suffix": [
+          "novastar-led.cn"
         ],
         "outbound": "direct"
       },
@@ -514,7 +514,6 @@
         "rule_set": "geosite-microsoft",
         "outbound": "🧩 Microsoft"
       },
-
       {
         "rule_set": [
           "geoip-telegram",
