@@ -1,6 +1,6 @@
 {
   "log": {
-    "level": "warn",
+    "level": "info",
     "timestamp": true
   },
   "experimental": {
@@ -68,19 +68,8 @@
         "server": "proxyDns"
       },
       {
-        "type": "logical",
-        "mode": "and",
-        "rules": [
-          {
-            "rule_set": "geosite-geolocation-!cn",
-            "invert": true
-          },
-          {
-            "rule_set": "geoip-cn"
-          }
-        ],
-        "server": "proxyDns",
-        "client_subnet": "114.114.114.114/24"
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "proxyDns"
       }
     ],
     "strategy": "ipv4_only"
