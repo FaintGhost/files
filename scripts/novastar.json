@@ -33,10 +33,10 @@
       ]
     },
     {
-      "domain_keyword": [
-        "novastar",
-        "novaicare",
-        "vnnox"
+      "domain": [
+        "ehr.novastar.tech",
+        "oa.novastar.tech",
+        "pwd.novastar.tech"
       ]
     }
   ]
