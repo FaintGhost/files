@@ -41,7 +41,9 @@
     ],
     "rules": [
       {
-        "rule_set": "geosite-novastar",
+        "domain_keyword": [
+          "novastar"
+        ],
         "server": "novastarDns"
       },
       {
