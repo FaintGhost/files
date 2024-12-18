@@ -164,11 +164,9 @@
     },
     {
       "tag": "🇺🇸 美国节点",
-      "type": "urltest",
+      "type": "selector",
       "outbounds": [],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "5m",
-      "tolerance": 50
+      "interrupt_exist_connections": true
     },
     {
       "tag": "🇰🇷 韩国节点",
