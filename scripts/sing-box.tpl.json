@@ -417,6 +417,10 @@
         "outbound": "dns-out"
       },
       {
+        "source_ip_cidr": "192.168.50.123",
+        "outbound": "🇺🇸 美国节点"
+      },
+      {
         "domain": [
           "www.novastar.tech",
           "drive.novastar.wiki",
