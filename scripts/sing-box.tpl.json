@@ -200,6 +200,14 @@
       ]
     },
     {
+      "tag": "美国原生",
+      "type": "selector",
+      "outbounds": [
+        "🇺🇸 美国节点",
+        "direct"
+      ]
+    },
+    {
       "tag": "🤖 OpenAI",
       "type": "selector",
       "outbounds": [
@@ -446,6 +454,10 @@
         "outbound": "NovaStar"
       },
       {
+        "rule_set": "geosite-us-native",
+        "outbound": "美国原生"
+      },
+      {
         "rule_set": "geosite-category-ads-all",
         "outbound": "🛑 AdBlock"
       },
@@ -583,6 +595,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/personal.srs",
+        "download_detour": "auto"
+      },
+      {
+        "tag": "geosite-us-native",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/us_native.srs",
         "download_detour": "auto"
       },
       {
