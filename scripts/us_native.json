@@ -1,19 +1,22 @@
 {
-    "version": 2,
-    "rules": [
-      {
-        "package_name": [
-          "com.uvnv.ultramobile",
-          "com.konylabs.capitalone",
-          "com.paypal.android.p2pmobile"
-        ]
-      },
-      {
-        "domain_keyword": [
-          "ultramobile",
-          "paypal",
-          "capitalone"
-        ]
-      }
-    ]
-  }
+  "version": 2,
+  "rules": [
+    {
+      "package_name": [
+        "com.uvnv.ultramobile",
+        "com.konylabs.capitalone",
+        "com.paypal.android.p2pmobile"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "ultramobile",
+        "paypal",
+        "capitalone",
+        "equifax",
+        "experian",
+        "transunion"
+      ]
+    }
+  ]
+}
