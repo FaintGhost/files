@@ -9,6 +9,7 @@
         "172.16.81.222",
         "172.16.81.226",
         "172.16.81.66",
+        "172.16.91.27",
         "10.20.150.9",
         "10.20.112.65",
         "10.20.112.64",
@@ -37,7 +38,9 @@
       "domain": [
         "ehr.novastar.tech",
         "oa.novastar.tech",
-        "pwd.novastar.tech"
+        "pwd.novastar.tech",
+        "iam-idp.novastar.tech",
+        "iam.novastar.tech"
       ]
     }
   ]
