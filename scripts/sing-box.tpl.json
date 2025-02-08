@@ -169,7 +169,7 @@
       "interrupt_exist_connections": true
     },
     {
-      "tag": "Personal",
+      "tag": "💻Personal",
       "type": "selector",
       "outbounds": [
         "direct",
@@ -191,7 +191,7 @@
       ]
     },
     {
-      "tag": "美国原生",
+      "tag": "🦅美国原生",
       "type": "selector",
       "outbounds": [
         "🗽美国节点",
@@ -366,7 +366,7 @@
       ]
     },
     {
-      "tag": "漏网之鱼",
+      "tag": "🐟漏网之鱼",
       "type": "selector",
       "outbounds": [
         "🛬落地节点",
@@ -396,7 +396,7 @@
   ],
   "route": {
     "auto_detect_interface": true,
-    "final": "漏网之鱼",
+    "final": "🐟漏网之鱼",
     "rules": [
       {
         "type": "logical",
@@ -430,7 +430,7 @@
           "geosite-personal",
           "geosite-teamviewer"
         ],
-        "outbound": "Personal"
+        "outbound": "💻Personal"
       },
       {
         "rule_set": "geosite-novastar",
@@ -438,7 +438,7 @@
       },
       {
         "rule_set": "geosite-us-native",
-        "outbound": "美国原生"
+        "outbound": "🦅美国原生"
       },
       {
         "rule_set": "geosite-category-ads-all",
