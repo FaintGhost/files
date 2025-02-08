@@ -8,7 +8,7 @@
       "external_controller": "0.0.0.0:9090",
       "external_ui": "ui",
       "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip",
-      "external_ui_download_detour": "节点选择",
+      "external_ui_download_detour": "➡️节点选择",
       "secret": "",
       "default_mode": "rule"
     },
@@ -22,7 +22,7 @@
       {
         "tag": "proxyDns",
         "address": "tls://1.1.1.1",
-        "detour": "节点选择"
+        "detour": "➡️节点选择"
       },
       {
         "tag": "localDns",
@@ -110,20 +110,20 @@
   ],
   "outbounds": [
     {
-      "tag": "落地节点",
+      "tag": "🛬落地节点",
       "type": "selector",
       "outbounds": []
     },
     {
-      "tag": "节点选择",
+      "tag": "➡️节点选择",
       "type": "selector",
       "outbounds": [
-        "auto",
+        "🔄自动测速",
         "direct"
       ]
     },
     {
-      "tag": "auto",
+      "tag": "🔄自动测速",
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
@@ -131,7 +131,7 @@
       "tolerance": 50
     },
     {
-      "tag": "🇭🇰 香港节点",
+      "tag": "🧧香港节点",
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
@@ -139,7 +139,7 @@
       "tolerance": 50
     },
     {
-      "tag": "🇹🇼 台湾节点",
+      "tag": "🧋台湾节点",
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
@@ -147,7 +147,7 @@
       "tolerance": 50
     },
     {
-      "tag": "🇸🇬 狮城节点",
+      "tag": "🦁狮城节点",
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
@@ -155,7 +155,7 @@
       "tolerance": 50
     },
     {
-      "tag": "🇯🇵 日本节点",
+      "tag": "⛩️日本节点",
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
@@ -163,7 +163,7 @@
       "tolerance": 50
     },
     {
-      "tag": "🇺🇸 美国节点",
+      "tag": "🗽美国节点",
       "type": "selector",
       "outbounds": [],
       "interrupt_exist_connections": true
@@ -174,12 +174,12 @@
       "outbounds": [
         "direct",
         "novastar",
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
@@ -194,182 +194,182 @@
       "tag": "美国原生",
       "type": "selector",
       "outbounds": [
-        "🇺🇸 美国节点",
+        "🗽美国节点",
         "direct"
       ]
     },
     {
-      "tag": "🤖 OpenAI",
+      "tag": "🤖OpenAI",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇸🇬 狮城节点",
-        "🇹🇼 台湾节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🦁狮城节点",
+        "🧋台湾节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ],
-      "default": "落地节点"
+      "default": "🛬落地节点"
     },
     {
-      "tag": "🌌 Google",
+      "tag": "🌌Google",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
-      "tag": "🐙 GitHub",
+      "tag": "🐙GitHub",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
-      "tag": "🍎 Apple",
+      "tag": "🍎Apple",
       "type": "selector",
       "outbounds": [
         "direct",
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
       "tag": "💿 OneDrive",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点",
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点",
         "direct"
       ]
     },
     {
-      "tag": "🧩 Microsoft",
+      "tag": "🧩Microsoft",
       "type": "selector",
       "outbounds": [
         "direct",
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
-      "tag": "📟 Telegram",
+      "tag": "📟Telegram",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
-      "tag": "🐦 Twitter",
+      "tag": "🐦Twitter",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
-      "tag": "👤 Facebook",
+      "tag": "👤Facebook",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
-      "tag": "🛍️ Amazon",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
-      ]
-    },
-    {
-      "tag": "📺 Bilibili",
+      "tag": "🛍️Amazon",
       "type": "selector",
       "outbounds": [
         "direct",
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点"
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
       ]
     },
     {
-      "tag": "🎬 MediaVideo",
+      "tag": "📺Bilibili",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点"
+        "direct",
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点"
       ]
     },
     {
-      "tag": "🌏 !cn",
+      "tag": "🎬MediaVideo",
       "type": "selector",
       "outbounds": [
-        "落地节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇸 美国节点",
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点"
+      ]
+    },
+    {
+      "tag": "🌏!cn",
+      "type": "selector",
+      "outbounds": [
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点",
         "direct"
       ]
     },
     {
-      "tag": "🌏 cn",
+      "tag": "🌏cn",
       "type": "selector",
       "outbounds": [
         "direct",
-        "节点选择"
+        "➡️节点选择"
       ]
     },
     {
       "tag": "漏网之鱼",
       "type": "selector",
       "outbounds": [
-        "落地节点",
+        "🛬落地节点",
         "direct"
       ]
     },
@@ -417,7 +417,7 @@
           "drive.novastar.wiki",
           "data.novastar.wiki"
         ],
-        "outbound": "节点选择"
+        "outbound": "➡️节点选择"
       },
       {
         "domain_suffix": [
@@ -450,7 +450,7 @@
       },
       {
         "clash_mode": "global",
-        "outbound": "节点选择"
+        "outbound": "➡️节点选择"
       },
       {
         "type": "logical",
@@ -477,7 +477,7 @@
           "geosite-openai",
           "geosite-claude"
         ],
-        "outbound": "🤖 OpenAI"
+        "outbound": "🤖OpenAI"
       },
       {
         "rule_set": [
@@ -485,7 +485,7 @@
           "geoip-google",
           "geosite-google"
         ],
-        "outbound": "🌌 Google"
+        "outbound": "🌌Google"
       },
       {
         "rule_set": [
@@ -493,7 +493,7 @@
           "geosite-container",
           "geosite-docker"
         ],
-        "outbound": "🐙 GitHub"
+        "outbound": "🐙GitHub"
       },
       {
         "rule_set": [
@@ -501,7 +501,7 @@
           "geosite-apple",
           "geosite-applemusic"
         ],
-        "outbound": "🍎 Apple"
+        "outbound": "🍎Apple"
       },
       {
         "rule_set": [
@@ -511,39 +511,39 @@
       },
       {
         "rule_set": "geosite-microsoft",
-        "outbound": "🧩 Microsoft"
+        "outbound": "🧩Microsoft"
       },
       {
         "rule_set": [
           "geoip-telegram",
           "geosite-telegram"
         ],
-        "outbound": "📟 Telegram"
+        "outbound": "📟Telegram"
       },
       {
         "rule_set": [
           "geoip-twitter",
           "geosite-twitter"
         ],
-        "outbound": "🐦 Twitter"
+        "outbound": "🐦Twitter"
       },
       {
         "rule_set": [
           "geoip-facebook",
           "geosite-facebook"
         ],
-        "outbound": "👤 Facebook"
+        "outbound": "👤Facebook"
       },
       {
         "rule_set": "geosite-amazon",
-        "outbound": "🛍️ Amazon"
+        "outbound": "🛍️Amazon"
       },
       {
         "rule_set": [
           "geoip-bilibili",
           "geosite-bilibili"
         ],
-        "outbound": "📺 Bilibili"
+        "outbound": "📺Bilibili"
       },
       {
         "rule_set": [
@@ -553,15 +553,15 @@
           "geosite-disney",
           "geosite-primevideo"
         ],
-        "outbound": "🎬 MediaVideo"
+        "outbound": "🎬MediaVideo"
       },
       {
         "rule_set": "geosite-geolocation-!cn",
-        "outbound": "🌏 !cn"
+        "outbound": "🌏!cn"
       },
       {
         "ip_is_private": true,
-        "outbound": "🌏 cn"
+        "outbound": "🌏cn"
       },
       {
         "rule_set": [
@@ -569,7 +569,7 @@
           "geosite-cn",
           "geosite-steam@cn"
         ],
-        "outbound": "🌏 cn"
+        "outbound": "🌏cn"
       }
     ],
     "rule_set": [
@@ -578,21 +578,21 @@
         "type": "remote",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/personal.srs",
-        "download_detour": "auto"
+        "download_detour": "🔄自动测速"
       },
       {
         "tag": "geosite-us-native",
         "type": "remote",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/us_native.srs",
-        "download_detour": "auto"
+        "download_detour": "🔄自动测速"
       },
       {
         "tag": "geosite-novastar",
         "type": "remote",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/novastar.srs",
-        "download_detour": "auto"
+        "download_detour": "🔄自动测速"
       },
       {
         "tag": "geoip-google",
