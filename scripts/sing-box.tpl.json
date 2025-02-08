@@ -530,7 +530,8 @@
       {
         "rule_set": [
           "geoip-facebook",
-          "geosite-facebook"
+          "geosite-facebook",
+          "geosite-whatsapp"
         ],
         "outbound": "👤Facebook"
       },
@@ -725,6 +726,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/facebook.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-whatsapp",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/whatsapp.srs",
         "download_detour": "direct"
       },
       {
