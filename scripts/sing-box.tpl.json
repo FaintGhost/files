@@ -366,6 +366,14 @@
       ]
     },
     {
+      "tag": "漏网之鱼",
+      "type": "selector",
+      "outbounds": [
+        "落地节点",
+        "direct"
+      ]
+    },
+    {
       "tag": "🛑 AdBlock",
       "type": "selector",
       "outbounds": [
@@ -388,7 +396,7 @@
   ],
   "route": {
     "auto_detect_interface": true,
-    "final": "落地节点",
+    "final": "漏网之鱼",
     "rules": [
       {
         "type": "logical",
