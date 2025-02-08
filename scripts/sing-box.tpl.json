@@ -8,7 +8,7 @@
       "external_controller": "0.0.0.0:9090",
       "external_ui": "ui",
       "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip",
-      "external_ui_download_detour": "proxy",
+      "external_ui_download_detour": "节点选择",
       "secret": "",
       "default_mode": "rule"
     },
@@ -22,7 +22,7 @@
       {
         "tag": "proxyDns",
         "address": "tls://1.1.1.1",
-        "detour": "proxy"
+        "detour": "节点选择"
       },
       {
         "tag": "localDns",
@@ -115,7 +115,7 @@
       "outbounds": []
     },
     {
-      "tag": "proxy",
+      "tag": "节点选择",
       "type": "selector",
       "outbounds": [
         "auto",
@@ -362,7 +362,7 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "proxy"
+        "节点选择"
       ]
     },
     {
@@ -404,16 +404,12 @@
         "outbound": "dns-out"
       },
       {
-        "source_ip_cidr": "192.168.50.123",
-        "outbound": "🇺🇸 美国节点"
-      },
-      {
         "domain": [
           "www.novastar.tech",
           "drive.novastar.wiki",
           "data.novastar.wiki"
         ],
-        "outbound": "proxy"
+        "outbound": "节点选择"
       },
       {
         "domain_suffix": [
@@ -446,7 +442,7 @@
       },
       {
         "clash_mode": "global",
-        "outbound": "proxy"
+        "outbound": "节点选择"
       },
       {
         "type": "logical",
