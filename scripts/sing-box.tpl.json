@@ -199,6 +199,19 @@
       ]
     },
     {
+      "tag": "🔥Cloudflare",
+      "type": "selector",
+      "outbounds": [
+        "🛬落地节点",
+        "🧧香港节点",
+        "🧋台湾节点",
+        "🦁狮城节点",
+        "⛩️日本节点",
+        "🗽美国节点",
+        "direct"
+      ]
+    },
+    {
       "tag": "🤖OpenAI",
       "type": "selector",
       "outbounds": [
@@ -298,7 +311,7 @@
       ]
     },
     {
-      "tag": "👤Facebook",
+      "tag": "👤Meta",
       "type": "selector",
       "outbounds": [
         "🛬落地节点",
@@ -474,6 +487,13 @@
       },
       {
         "rule_set": [
+          "geoip-cloudflare",
+          "geosite-cloudflare"
+        ],
+        "outbound": "🔥Cloudflare"
+      },
+      {
+        "rule_set": [
           "geosite-openai",
           "geosite-claude"
         ],
@@ -531,9 +551,10 @@
         "rule_set": [
           "geoip-facebook",
           "geosite-facebook",
-          "geosite-whatsapp"
+          "geosite-whatsapp",
+          "geosite-instagram"
         ],
-        "outbound": "👤Facebook"
+        "outbound": "👤Meta"
       },
       {
         "rule_set": "geosite-amazon",
@@ -594,6 +615,20 @@
         "format": "binary",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/novastar.srs",
         "download_detour": "🔄自动测速"
+      },
+      {
+        "tag": "geoip-cloudflare",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cloudflare.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-cloudflare",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/cloudflare.srs",
+        "download_detour": "direct"
       },
       {
         "tag": "geoip-google",
@@ -733,6 +768,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/whatsapp.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-instagram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/instagram.srs",
         "download_detour": "direct"
       },
       {
