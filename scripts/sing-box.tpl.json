@@ -81,7 +81,6 @@
       "mtu": 9000,
       "auto_route": true,
       "strict_route": true,
-      "sniff": true,
       "endpoint_independent_nat": false,
       "stack": "system",
       "domain_strategy": "prefer_ipv4",
@@ -196,6 +195,14 @@
       "outbounds": [
         "🗽美国节点",
         "direct"
+      ]
+    },
+    {
+      "tag": "🏠回家节点",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "home"
       ]
     },
     {
@@ -399,10 +406,6 @@
       "tag": "direct"
     },
     {
-      "type": "dns",
-      "tag": "dns-out"
-    },
-    {
       "type": "block",
       "tag": "block"
     }
@@ -412,17 +415,11 @@
     "final": "🐟漏网之鱼",
     "rules": [
       {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          {
-            "protocol": "dns"
-          },
-          {
-            "port": 53
-          }
-        ],
-        "outbound": "dns-out"
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
       },
       {
         "domain": [
@@ -437,6 +434,12 @@
           "novastar-led.cn"
         ],
         "outbound": "direct"
+      },
+      {
+        "ip_cidr": [
+          "192.168.50.0/24"
+        ],
+        "outbound": "🏠回家节点"
       },
       {
         "rule_set": [
