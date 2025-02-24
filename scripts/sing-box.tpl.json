@@ -31,8 +31,14 @@
       },
       {
         "tag": "novastarDns",
-        "address": "tcp://172.16.0.201",
-        "detour": "novastar"
+        "address": "https://dns.k7s.cc/dns-query",
+        "address_resolver": "resolver",
+        "detour": "direct"
+      },
+      {
+        "tag": "resolver",
+        "address": "114.114.114.114",
+        "detour": "direct"
       },
       {
         "tag": "block",
@@ -112,6 +118,14 @@
       "tag": "🛬落地节点",
       "type": "selector",
       "outbounds": []
+    },
+    {
+      "tag": "🚪前置节点",
+      "type": "selector",
+      "outbounds": [
+        "➡️节点选择",
+        "direct"
+      ]
     },
     {
       "tag": "➡️节点选择",
