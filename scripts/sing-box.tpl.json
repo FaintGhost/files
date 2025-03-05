@@ -476,6 +476,10 @@
         "outbound": "🦅美国原生"
       },
       {
+        "rule_set": "geosite-game",
+        "outbound": "🕹️游戏节点"
+      },
+      {
         "rule_set": "geosite-category-ads-all",
         "outbound": "🛑 AdBlock"
       },
@@ -636,6 +640,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/novastar.srs",
+        "download_detour": "🔄自动测速"
+      },
+      {
+        "tag": "geosite-game",
+        "type": "remote",
+        "format": "json",
+        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/game.json",
         "download_detour": "🔄自动测速"
       },
       {
