@@ -140,7 +140,7 @@
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
-      "interval": "5m",
+      "interval": "1m",
       "tolerance": 50
     },
     {
@@ -148,7 +148,7 @@
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
-      "interval": "5m",
+      "interval": "1m",
       "tolerance": 50
     },
     {
@@ -156,7 +156,7 @@
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
-      "interval": "5m",
+      "interval": "1m",
       "tolerance": 50
     },
     {
@@ -164,7 +164,7 @@
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
-      "interval": "5m",
+      "interval": "1m",
       "tolerance": 50
     },
     {
@@ -172,7 +172,7 @@
       "type": "urltest",
       "outbounds": [],
       "url": "http://www.gstatic.com/generate_204",
-      "interval": "5m",
+      "interval": "1m",
       "tolerance": 50
     },
     {
@@ -196,7 +196,12 @@
       ]
     },
     {
-      "tag": "NovaStar",
+      "tag": "🕹️游戏节点",
+      "type": "selector",
+      "outbounds": []
+    },
+    {
+      "tag": "⭐NovaStar",
       "type": "selector",
       "outbounds": [
         "novastar",
