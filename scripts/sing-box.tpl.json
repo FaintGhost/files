@@ -645,7 +645,7 @@
       {
         "tag": "geosite-game",
         "type": "remote",
-        "format": "json",
+        "format": "source",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/game.json",
         "download_detour": "🔄自动测速"
       },
