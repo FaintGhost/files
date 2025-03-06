@@ -33,7 +33,7 @@
         "tag": "novastarDns",
         "address": "https://dns.k7s.cc/dns-query",
         "address_resolver": "resolver",
-        "detour": "direct"
+        "strategy": "ipv4_only"
       },
       {
         "tag": "resolver",
@@ -77,8 +77,7 @@
         "rule_set": "geosite-geolocation-!cn",
         "server": "proxyDns"
       }
-    ],
-    "strategy": "ipv4_only"
+    ]
   },
   "inbounds": [
     {
