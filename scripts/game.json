@@ -3,7 +3,9 @@
     "rules": [
       {
         "process_name": [
-          "MonsterHunterWilds.exe"
+          "MonsterHunterWilds.exe",
+          "Trae.exe",
+          "ai-agent.exe"
         ]
       },
       {
