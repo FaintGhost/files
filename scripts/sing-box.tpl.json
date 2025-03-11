@@ -48,7 +48,8 @@
     "rules": [
       {
         "domain_keyword": [
-          "novastar"
+          "novastar",
+          "novaops"
         ],
         "server": "novastarDns"
       },
@@ -197,15 +198,14 @@
     {
       "tag": "🕹️游戏节点",
       "type": "selector",
-      "outbounds": []
+      "outbounds": [
+        "direct"
+      ]
     },
     {
       "tag": "⭐NovaStar",
       "type": "selector",
-      "outbounds": [
-        "novastar",
-        "direct"
-      ]
+      "outbounds": []
     },
     {
       "tag": "🦅美国原生",
@@ -286,7 +286,7 @@
       ]
     },
     {
-      "tag": "💿 OneDrive",
+      "tag": "💿OneDrive",
       "type": "selector",
       "outbounds": [
         "🛬落地节点",
@@ -412,7 +412,7 @@
       ]
     },
     {
-      "tag": "🛑 AdBlock",
+      "tag": "🛑AdBlock",
       "type": "selector",
       "outbounds": [
         "block",
@@ -480,7 +480,7 @@
       },
       {
         "rule_set": "geosite-category-ads-all",
-        "outbound": "🛑 AdBlock"
+        "outbound": "🛑AdBlock"
       },
       {
         "clash_mode": "direct",
@@ -552,7 +552,7 @@
         "rule_set": [
           "geosite-onedrive"
         ],
-        "outbound": "💿 OneDrive"
+        "outbound": "💿OneDrive"
       },
       {
         "rule_set": "geosite-microsoft",
