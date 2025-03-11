@@ -186,7 +186,7 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "novastar",
+        "⭐NovaStar",
         "🛬落地节点",
         "🧧香港节点",
         "🧋台湾节点",
@@ -205,7 +205,9 @@
     {
       "tag": "⭐NovaStar",
       "type": "selector",
-      "outbounds": []
+      "outbounds": [
+        "direct"
+      ]
     },
     {
       "tag": "🦅美国原生",
