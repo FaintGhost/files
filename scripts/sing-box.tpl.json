@@ -626,28 +626,28 @@
         "tag": "geosite-personal",
         "type": "remote",
         "format": "binary",
-        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/personal.srs",
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/personal.srs",
         "download_detour": "🔄自动测速"
       },
       {
         "tag": "geosite-us-native",
         "type": "remote",
         "format": "binary",
-        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/us_native.srs",
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/us_native.srs",
         "download_detour": "🔄自动测速"
       },
       {
         "tag": "geosite-novastar",
         "type": "remote",
         "format": "binary",
-        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/novastar.srs",
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.srs",
         "download_detour": "🔄自动测速"
       },
       {
         "tag": "geosite-game",
         "type": "remote",
         "format": "source",
-        "url": "https://raw.githubusercontent.com/FaintGhost/files/rm/scripts/game.json",
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/game.json",
         "download_detour": "🔄自动测速"
       },
       {
