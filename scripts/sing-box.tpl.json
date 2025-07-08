@@ -7,7 +7,7 @@
     "clash_api": {
       "external_controller": "0.0.0.0:9090",
       "external_ui": "ui",
-      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip",
+      "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist-cdn-fonts.zip",
       "external_ui_download_detour": "➡️节点选择",
       "secret": "",
       "default_mode": "rule"
@@ -627,28 +627,28 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/personal.srs",
-        "download_detour": "🔄自动测速"
+        "download_detour": "direct"
       },
       {
         "tag": "geosite-us-native",
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/us_native.srs",
-        "download_detour": "🔄自动测速"
+        "download_detour": "direct"
       },
       {
         "tag": "geosite-novastar",
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.srs",
-        "download_detour": "🔄自动测速"
+        "download_detour": "direct"
       },
       {
         "tag": "geosite-game",
         "type": "remote",
         "format": "source",
         "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/game.json",
-        "download_detour": "🔄自动测速"
+        "download_detour": "direct"
       },
       {
         "tag": "geoip-cloudflare",
