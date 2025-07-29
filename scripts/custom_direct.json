@@ -10,7 +10,8 @@
         "WeChat.exe",
         "WXWorkWeb.exe",
         "tailscaled.exe",
-        "tailscale-ipn.exe"
+        "tailscale-ipn.exe",
+        "1Password.exe"
       ]
     },
     {

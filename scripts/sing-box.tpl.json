@@ -646,13 +646,6 @@
         "download_detour": "direct"
       },
       {
-        "tag": "geosite-teamviewer",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/teamviewer.srs",
-        "download_detour": "direct"
-      },
-      {
         "tag": "geosite-us-native",
         "type": "remote",
         "format": "binary",
