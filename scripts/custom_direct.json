@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "rules": [
+    {
+      "process_name": [
+        "aria2c.exe",
+        "SunloginClient.exe",
+        "ToDesk.exe",
+        "Weixin.exe",
+        "WeChat.exe",
+        "WXWorkWeb.exe",
+        "tailscaled.exe",
+        "tailscale-ipn.exe"
+      ]
+    },
+    {
+      "package_name": [
+        "com.idormy.sms.forwarder"
+      ]
+    }
+  ]
+}

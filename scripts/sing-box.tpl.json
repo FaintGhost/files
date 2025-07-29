@@ -182,17 +182,20 @@
       "interrupt_exist_connections": true
     },
     {
-      "tag": "💻Personal",
+      "tag": "自定义直连",
       "type": "selector",
       "outbounds": [
         "direct",
-        "⭐NovaStar",
+        "🛬落地节点"
+      ]
+    },
+    {
+      "tag": "自定义代理",
+      "type": "selector",
+      "outbounds": [
         "🛬落地节点",
-        "🧧香港节点",
-        "🧋台湾节点",
-        "🦁狮城节点",
-        "⛩️日本节点",
-        "🗽美国节点"
+        "➡️节点选择",
+        "direct"
       ]
     },
     {
@@ -463,10 +466,16 @@
       },
       {
         "rule_set": [
-          "geosite-personal",
+          "geosite-custom-direct"
+        ],
+        "outbound": "自定义直连"
+      },
+      {
+        "rule_set": [
+          "geosite-custom-proxy",
           "geosite-teamviewer"
         ],
-        "outbound": "💻Personal"
+        "outbound": "自定义代理"
       },
       {
         "rule_set": "geosite-novastar",
@@ -623,10 +632,24 @@
     ],
     "rule_set": [
       {
-        "tag": "geosite-personal",
+        "tag": "geosite-custom-direct",
+        "type": "remote",
+        "format": "source",
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/custom_direct.json",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-custom-proxy",
+        "type": "remote",
+        "format": "source",
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/custom_proxy.json",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-teamviewer",
         "type": "remote",
         "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/personal.srs",
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/teamviewer.srs",
         "download_detour": "direct"
       },
       {
