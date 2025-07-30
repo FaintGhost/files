@@ -1,20 +1,17 @@
 {
-    "version": 2,
-    "rules": [
-      {
-        "process_name": [
-          "MonsterHunterWilds.exe",
-          "Trae.exe",
-          "ai-agent.exe",
-          "Code - Insiders.exe"
-        ]
-      },
-      {
-        "domain_keyword": [
-          "nikke-kr",
-          "appsflyersdk",
-          "intlgame"
-        ]
-      }
-    ]
-  }
+  "version": 2,
+  "rules": [
+    {
+      "process_name": [
+        "MonsterHunterWilds.exe"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "nikke-kr",
+        "appsflyersdk",
+        "intlgame"
+      ]
+    }
+  ]
+}
