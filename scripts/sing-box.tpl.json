@@ -372,7 +372,9 @@
         "direct",
         "🛬落地节点",
         "🧧香港节点",
-        "🧋台湾节点"
+        "🧋台湾节点",
+        "🏠回家节点"
+
       ]
     },
     {
@@ -405,7 +407,8 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "➡️节点选择"
+        "➡️节点选择",
+        "🏠回家节点"
       ]
     },
     {
@@ -445,6 +448,24 @@
         "action": "hijack-dns"
       },
       {
+        "domain_suffix": [
+          "taobao.com",
+          "jd.com",
+          "bilibili.com",
+          "tmall.com",
+          "360buyimg.com",
+          "jdcloud.com",
+          "jingdong.com",
+          "vipmro.com",
+          "yiyaojd.com",
+          "jdh.com",
+          "7fresh.com",
+          "jingxi.com",
+          "jkcsjd.com"
+        ],
+        "outbound": "🏠回家节点"
+      },
+      {
         "domain": [
           "www.novastar.tech",
           "drive.novastar.wiki",
@@ -463,6 +484,13 @@
           "192.168.50.0/24"
         ],
         "outbound": "🏠回家节点"
+      },
+      {
+        "domain_suffix": [
+          "adobe.io",
+          "adobestats.io"
+        ],
+        "outbound": "🛑AdBlock"
       },
       {
         "rule_set": [
