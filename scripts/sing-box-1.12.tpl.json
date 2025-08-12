@@ -29,21 +29,18 @@
       {
         "tag": "localDns",
         "type": "https",
-        "server": "223.5.5.5",
-        "detour": "direct"
+        "server": "223.5.5.5"
       },
       {
         "tag": "novastarDns",
         "type": "https",
         "server": "dns.k7s.cc",
-        "address_resolver": "resolver",
-        "strategy": "ipv4_only"
+        "domain_resolver": "resolver"
       },
       {
         "tag": "resolver",
         "type": "udp",
-        "server": "114.114.114.114",
-        "detour": "direct"
+        "server": "114.114.114.114"
       },
       {
         "tag": "block",
@@ -442,6 +439,7 @@
     }
   ],
   "route": {
+    "default_domain_resolver": "resolver",
     "auto_detect_interface": true,
     "final": "🐟漏网之鱼",
     "rules": [
