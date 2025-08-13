@@ -21,10 +21,6 @@
   "dns": {
     "servers": [
       {
-        "type":"local",
-        "tag":"local"
-      },
-      {
         "tag": "proxyDns",
         "type": "tls",
         "server": "1.1.1.1",
@@ -34,6 +30,11 @@
         "tag": "localDns",
         "type": "https",
         "server": "223.5.5.5"
+      },
+      {
+        "tag": "resolver",
+        "type": "udp",
+        "server": "114.114.114.114"
       }
     ],
     "rules": [
@@ -405,7 +406,7 @@
     }
   ],
   "route": {
-    "default_domain_resolver": "local",
+    "default_domain_resolver": "resolver",
     "auto_detect_interface": true,
     "final": "🐟漏网之鱼",
     "rules": [
