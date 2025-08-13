@@ -434,9 +434,6 @@
         "action": "hijack-dns"
       },
       {
-        "ip_cidr": [
-          "192.168.50.0/24"
-        ],
         "domain_suffix": [
           "taobao.com",
           "jd.com",
@@ -463,13 +460,23 @@
         "outbound": "➡️节点选择"
       },
       {
-        "port": [
-          22
-        ],
         "domain_suffix": [
           "novastar-led.cn"
         ],
         "outbound": "direct"
+      },
+      {
+        "ip_cidr": [
+          "192.168.50.0/24"
+        ],
+        "outbound": "🏠回家节点"
+      },
+      {
+        "domain_suffix": [
+          "adobe.io",
+          "adobestats.io"
+        ],
+        "outbound": "🛑AdBlock"
       },
       {
         "rule_set": [
@@ -497,10 +504,6 @@
         "outbound": "🕹️游戏节点"
       },
       {
-        "domain_suffix": [
-          "adobe.io",
-          "adobestats.io"
-        ],
         "rule_set": "geosite-category-ads-all",
         "outbound": "🛑AdBlock"
       },
@@ -511,6 +514,12 @@
       {
         "clash_mode": "global",
         "outbound": "➡️节点选择"
+      },
+      {
+        "port": [
+          22
+        ],
+        "outbound": "direct"
       },
       {
         "rule_set": [
