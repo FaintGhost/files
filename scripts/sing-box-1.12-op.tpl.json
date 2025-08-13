@@ -32,26 +32,12 @@
         "server": "223.5.5.5"
       },
       {
-        "tag": "novastarDns",
-        "type": "https",
-        "server": "dns.k7s.cc",
-        "domain_resolver": "resolver"
-      },
-      {
         "tag": "resolver",
         "type": "udp",
         "server": "114.114.114.114"
       }
     ],
     "rules": [
-      {
-        "domain_keyword": [
-          "novastar",
-          "novaops"
-        ],
-        "action": "route",
-        "server": "novastarDns"
-      },
       {
         "rule_set": "geosite-category-ads-all",
         "action": "predefined",
@@ -85,6 +71,7 @@
       "address": "172.18.0.1/30",
       "mtu": 9000,
       "auto_route": true,
+      "auto_redirect": true,
       "strict_route": true,
       "endpoint_independent_nat": false,
       "stack": "system",
@@ -206,26 +193,11 @@
       ]
     },
     {
-      "tag": "⭐NovaStar",
-      "type": "selector",
-      "outbounds": [
-        "direct"
-      ]
-    },
-    {
       "tag": "🦅美国原生",
       "type": "selector",
       "outbounds": [
         "🗽美国节点",
         "direct"
-      ]
-    },
-    {
-      "tag": "🏠回家节点",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "home"
       ]
     },
     {
@@ -372,9 +344,7 @@
         "direct",
         "🛬落地节点",
         "🧧香港节点",
-        "🧋台湾节点",
-        "🏠回家节点"
-
+        "🧋台湾节点"
       ]
     },
     {
@@ -407,8 +377,7 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "➡️节点选择",
-        "🏠回家节点"
+        "➡️节点选择"
       ]
     },
     {
@@ -450,44 +419,6 @@
       },
       {
         "domain_suffix": [
-          "taobao.com",
-          "jd.com",
-          "bilibili.com",
-          "tmall.com",
-          "360buyimg.com",
-          "jdcloud.com",
-          "jingdong.com",
-          "vipmro.com",
-          "yiyaojd.com",
-          "jdh.com",
-          "7fresh.com",
-          "jingxi.com",
-          "jkcsjd.com"
-        ],
-        "outbound": "🏠回家节点"
-      },
-      {
-        "domain": [
-          "www.novastar.tech",
-          "drive.novastar.wiki",
-          "data.novastar.wiki"
-        ],
-        "outbound": "➡️节点选择"
-      },
-      {
-        "domain_suffix": [
-          "novastar-led.cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_cidr": [
-          "192.168.50.0/24"
-        ],
-        "outbound": "🏠回家节点"
-      },
-      {
-        "domain_suffix": [
           "adobe.io",
           "adobestats.io"
         ],
@@ -505,10 +436,6 @@
           "geosite-teamviewer"
         ],
         "outbound": "自定义代理"
-      },
-      {
-        "rule_set": "geosite-novastar",
-        "outbound": "⭐NovaStar"
       },
       {
         "rule_set": "geosite-us-native",
@@ -679,13 +606,6 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/us_native.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geosite-novastar",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.srs",
         "download_detour": "direct"
       },
       {
