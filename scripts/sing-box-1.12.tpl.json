@@ -63,17 +63,17 @@
         "server": "localDns"
       },
       {
+        "rule_set": "geosite-geolocation-!cn",
+        "action": "route",
+        "server": "proxyDns"
+      },
+      {
         "clash_mode": "direct",
         "action": "route",
         "server": "localDns"
       },
       {
         "clash_mode": "global",
-        "action": "route",
-        "server": "proxyDns"
-      },
-      {
-        "rule_set": "geosite-geolocation-!cn",
         "action": "route",
         "server": "proxyDns"
       }
@@ -88,21 +88,7 @@
       "strict_route": true,
       "endpoint_independent_nat": false,
       "stack": "system",
-      "domain_strategy": "prefer_ipv4",
-      "platform": {
-        "http_proxy": {
-          "enabled": true,
-          "server": "127.0.0.1",
-          "server_port": 2081
-        }
-      }
-    },
-    {
-      "type": "http",
-      "listen": "127.0.0.1",
-      "listen_port": 2081,
-      "sniff": true,
-      "users": []
+      "domain_strategy": "prefer_ipv4"
     },
     {
       "type": "mixed",
@@ -374,7 +360,6 @@
         "🧧香港节点",
         "🧋台湾节点",
         "🏠回家节点"
-
       ]
     },
     {
@@ -531,22 +516,8 @@
         "outbound": "➡️节点选择"
       },
       {
-        "type": "logical",
-        "mode": "or",
-        "rules": [
-          {
-            "domain": [
-              "clash.razord.top",
-              "yacd.metacubex.one",
-              "yacd.haishan.me",
-              "d.metacubex.one"
-            ]
-          },
-          {
-            "port": [
-              22
-            ]
-          }
+        "port": [
+          22
         ],
         "outbound": "direct"
       },
@@ -648,9 +619,6 @@
       },
       {
         "ip_is_private": true,
-        "outbound": "🌏cn"
-      },
-      {
         "rule_set": [
           "geoip-cn",
           "geosite-cn",

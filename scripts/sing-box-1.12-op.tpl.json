@@ -75,21 +75,7 @@
       "strict_route": true,
       "endpoint_independent_nat": false,
       "stack": "system",
-      "domain_strategy": "prefer_ipv4",
-      "platform": {
-        "http_proxy": {
-          "enabled": true,
-          "server": "127.0.0.1",
-          "server_port": 2081
-        }
-      }
-    },
-    {
-      "type": "http",
-      "listen": "127.0.0.1",
-      "listen_port": 2081,
-      "sniff": true,
-      "users": []
+      "domain_strategy": "prefer_ipv4"
     },
     {
       "type": "mixed",
@@ -182,21 +168,6 @@
       "outbounds": [
         "🛬落地节点",
         "➡️节点选择",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🕹️游戏节点",
-      "type": "selector",
-      "outbounds": [
-        "direct"
-      ]
-    },
-    {
-      "tag": "🦅美国原生",
-      "type": "selector",
-      "outbounds": [
-        "🗽美国节点",
         "direct"
       ]
     },
@@ -338,16 +309,6 @@
       ]
     },
     {
-      "tag": "📺Bilibili",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🛬落地节点",
-        "🧧香港节点",
-        "🧋台湾节点"
-      ]
-    },
-    {
       "tag": "🎬MediaVideo",
       "type": "selector",
       "outbounds": [
@@ -436,14 +397,6 @@
           "geosite-teamviewer"
         ],
         "outbound": "自定义代理"
-      },
-      {
-        "rule_set": "geosite-us-native",
-        "outbound": "🦅美国原生"
-      },
-      {
-        "rule_set": "geosite-game",
-        "outbound": "🕹️游戏节点"
       },
       {
         "rule_set": "geosite-category-ads-all",
@@ -546,13 +499,6 @@
       },
       {
         "rule_set": [
-          "geoip-bilibili",
-          "geosite-bilibili"
-        ],
-        "outbound": "📺Bilibili"
-      },
-      {
-        "rule_set": [
           "geoip-netflix",
           "geosite-netflix",
           "geosite-hbo",
@@ -588,20 +534,6 @@
         "type": "remote",
         "format": "source",
         "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/custom_proxy.json",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geosite-us-native",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/us_native.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geosite-game",
-        "type": "remote",
-        "format": "source",
-        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/game.json",
         "download_detour": "direct"
       },
       {
@@ -658,13 +590,6 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo-lite/geoip/apple.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geoip-bilibili",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo-lite/geoip/bilibili.srs",
         "download_detour": "direct"
       },
       {
@@ -763,13 +688,6 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/instagram.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geosite-bilibili",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/bilibili.srs",
         "download_detour": "direct"
       },
       {
