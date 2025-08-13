@@ -41,10 +41,6 @@
         "tag": "resolver",
         "type": "udp",
         "server": "114.114.114.114"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
       }
     ],
     "rules": [
@@ -53,31 +49,32 @@
           "novastar",
           "novaops"
         ],
+        "action": "route",
         "server": "novastarDns"
       },
       {
         "rule_set": "geosite-category-ads-all",
-        "server": "block"
-      },
-      {
-        "outbound": "any",
-        "server": "localDns",
-        "disable_cache": true
+        "action": "predefined",
+        "rcode": "NOERROR"
       },
       {
         "rule_set": "geosite-cn",
+        "action": "route",
         "server": "localDns"
       },
       {
         "clash_mode": "direct",
+        "action": "route",
         "server": "localDns"
       },
       {
         "clash_mode": "global",
+        "action": "route",
         "server": "proxyDns"
       },
       {
         "rule_set": "geosite-geolocation-!cn",
+        "action": "route",
         "server": "proxyDns"
       }
     ]

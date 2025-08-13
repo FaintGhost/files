@@ -11,6 +11,7 @@
         "WXWorkWeb.exe",
         "tailscaled.exe",
         "tailscale-ipn.exe",
+        "tailscale.exe",
         "1Password.exe"
       ]
     },
