@@ -112,6 +112,7 @@
       "users": []
     }
   ],
+  "endpoints": [],
   "outbounds": [
     {
       "tag": "🛬落地节点",
