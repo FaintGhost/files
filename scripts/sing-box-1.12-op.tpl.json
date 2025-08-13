@@ -21,6 +21,10 @@
   "dns": {
     "servers": [
       {
+        "type":"local",
+        "tag":"local"
+      },
+      {
         "tag": "proxyDns",
         "type": "tls",
         "server": "1.1.1.1",
@@ -30,11 +34,6 @@
         "tag": "localDns",
         "type": "https",
         "server": "223.5.5.5"
-      },
-      {
-        "tag": "resolver",
-        "type": "udp",
-        "server": "114.114.114.114"
       }
     ],
     "rules": [
@@ -406,7 +405,7 @@
     }
   ],
   "route": {
-    "default_domain_resolver": "resolver",
+    "default_domain_resolver": "local",
     "auto_detect_interface": true,
     "final": "🐟漏网之鱼",
     "rules": [
@@ -461,14 +460,6 @@
         "type": "logical",
         "mode": "or",
         "rules": [
-          {
-            "domain": [
-              "clash.razord.top",
-              "yacd.metacubex.one",
-              "yacd.haishan.me",
-              "d.metacubex.one"
-            ]
-          },
           {
             "port": [
               22
@@ -575,9 +566,6 @@
       },
       {
         "ip_is_private": true,
-        "outbound": "🌏cn"
-      },
-      {
         "rule_set": [
           "geoip-cn",
           "geosite-cn",
