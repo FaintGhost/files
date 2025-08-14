@@ -41,6 +41,11 @@
         "tag": "resolver",
         "type": "udp",
         "server": "114.114.114.114"
+      },
+      {
+        "type": "hosts",
+        "tag": "hosts",
+        "predefined": {}
       }
     ],
     "rules": [
@@ -50,7 +55,7 @@
           "novaops"
         ],
         "action": "route",
-        "server": "novastarDns"
+        "server": "hosts"
       },
       {
         "rule_set": "geosite-category-ads-all",
