@@ -49,6 +49,16 @@
         "server": "localDns"
       },
       {
+        "rule_set": [
+          "geosite-github",
+          "geosite-container",
+          "geosite-docker"
+        ],
+        "action": "route",
+        "server": "proxyDns",
+        "strategy": "prefer_ipv4"
+      },
+      {
         "clash_mode": "direct",
         "action": "route",
         "server": "localDns"
