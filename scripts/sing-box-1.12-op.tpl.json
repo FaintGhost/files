@@ -56,7 +56,7 @@
         ],
         "action": "route",
         "server": "proxyDns",
-        "strategy": "prefer_ipv4"
+        "strategy": "ipv4_only"
       },
       {
         "clash_mode": "direct",
@@ -73,7 +73,8 @@
         "action": "route",
         "server": "proxyDns"
       }
-    ]
+    ],
+    "strategy": "ipv4_only"
   },
   "inbounds": [
     {
