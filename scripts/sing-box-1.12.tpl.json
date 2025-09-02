@@ -439,6 +439,22 @@
         "action": "hijack-dns"
       },
       {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "process_name": "sing-box.exe"
+          },
+          {
+            "port": [
+              4430,
+              8443,
+              3478
+            ]
+          }
+        ]
+      },
+      {
         "domain_suffix": [
           "taobao.com",
           "jd.com",
@@ -455,14 +471,6 @@
           "jkcsjd.com"
         ],
         "outbound": "🏠回家节点"
-      },
-      {
-        "domain": [
-          "www.novastar.tech",
-          "drive.novastar.wiki",
-          "data.novastar.wiki"
-        ],
-        "outbound": "➡️节点选择"
       },
       {
         "domain_suffix": [
