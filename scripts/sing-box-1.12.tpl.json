@@ -448,7 +448,14 @@
               3478
             ]
           }
-        ]
+        ],
+        "outbound": "direct"
+      },
+     {
+        "domain_suffix": [
+          "novastar-led.cn"
+        ],
+        "outbound": "direct"
       },
       {
         "domain_suffix": [
@@ -467,12 +474,6 @@
           "jkcsjd.com"
         ],
         "outbound": "🏠回家节点"
-      },
-      {
-        "domain_suffix": [
-          "novastar-led.cn"
-        ],
-        "outbound": "direct"
       },
       {
         "ip_cidr": [
