@@ -32,12 +32,6 @@
         "server": "223.5.5.5"
       },
       {
-        "tag": "novastarDns",
-        "type": "https",
-        "server": "dns.k7s.cc",
-        "domain_resolver": "resolver"
-      },
-      {
         "tag": "resolver",
         "type": "udp",
         "server": "114.114.114.114"
@@ -50,9 +44,10 @@
     ],
     "rules": [
       {
-        "domain_keyword": [
-          "novastar",
-          "novaops"
+        "domain_suffix": [
+          "novastar.tech",
+          "novaops.tech",
+          "novastar.online"
         ],
         "action": "route",
         "server": "hosts"
@@ -216,7 +211,8 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "home"
+        "home",
+        "ts-ep"
       ]
     },
     {
