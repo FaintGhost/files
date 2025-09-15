@@ -370,6 +370,14 @@
       ]
     },
     {
+      "tag": "🐚SSH",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "⬆️出站节点"
+      ]
+    },
+    {
       "tag": "🛑AdBlock",
       "type": "selector",
       "outbounds": [
@@ -434,7 +442,7 @@
         "port": [
           22
         ],
-        "outbound": "direct"
+        "outbound": "🐚SSH"
       },
       {
         "rule_set": [

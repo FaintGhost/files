@@ -407,6 +407,14 @@
       ]
     },
     {
+      "tag": "🐚SSH",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "⬆️出站节点"
+      ]
+    },
+    {
       "tag": "🐟漏网之鱼",
       "type": "selector",
       "outbounds": [
@@ -538,7 +546,7 @@
         "port": [
           22
         ],
-        "outbound": "direct"
+        "outbound": "🐚SSH"
       },
       {
         "rule_set": [
