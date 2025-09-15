@@ -98,6 +98,15 @@
   "endpoints": [],
   "outbounds": [
     {
+      "tag": "⬆️出站节点",
+      "type": "selector",
+      "outbounds": [
+        "🛬落地节点",
+        "➡️节点选择",
+        "direct"
+      ]
+    },
+    {
       "tag": "🛬落地节点",
       "type": "selector",
       "outbounds": []
@@ -169,14 +178,14 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "🛬落地节点"
+        "⬆️出站节点"
       ]
     },
     {
       "tag": "自定义代理",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "➡️节点选择",
         "direct"
       ]
@@ -185,7 +194,7 @@
       "tag": "🔥Cloudflare",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -198,19 +207,19 @@
       "tag": "🤖OpenAI",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🦁狮城节点",
         "🧋台湾节点",
         "⛩️日本节点",
         "🗽美国节点"
       ],
-      "default": "🛬落地节点"
+      "default": "⬆️出站节点"
     },
     {
       "tag": "🌌Google",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -222,7 +231,7 @@
       "tag": "🐙GitHub",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -235,7 +244,7 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -247,7 +256,7 @@
       "tag": "💿OneDrive",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -261,7 +270,7 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -273,7 +282,7 @@
       "tag": "📟Telegram",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -285,7 +294,7 @@
       "tag": "🐦Twitter",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -297,7 +306,7 @@
       "tag": "👤Meta",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -310,7 +319,7 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -322,7 +331,7 @@
       "tag": "🎬MediaVideo",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -334,7 +343,7 @@
       "tag": "🌏!cn",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "🧧香港节点",
         "🧋台湾节点",
         "🦁狮城节点",
@@ -355,7 +364,7 @@
       "tag": "🐟漏网之鱼",
       "type": "selector",
       "outbounds": [
-        "🛬落地节点",
+        "⬆️出站节点",
         "direct"
       ]
     },
