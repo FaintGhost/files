@@ -302,7 +302,7 @@ rules:
   - DOMAIN-SUFFIX,novaops.tech,DIRECT
   - RULE-SET,geoip-google,Google
   - RULE-SET,geosite-google,Google
-  - RULE-SET,geosite-youtube.YouTube
+  - RULE-SET,geosite-youtube,YouTube
   - RULE-SET,geosite-openai,OpenAI
   - RULE-SET,geosite-whatsapp,WhatsApp
   - RULE-SET,geosite-linkedin,Linkedin
