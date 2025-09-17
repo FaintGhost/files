@@ -85,10 +85,10 @@ proxy-groups:
       - 日本节点
       - 韩国节点
   - name: Teamviewer
-    type: seletc
+    type: select
     proxies:
       - ➡️节点选择
-      - direct
+      - DIRECT
       - 美国节点
       - 香港节点
       - 台湾节点
