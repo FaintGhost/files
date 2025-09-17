@@ -28,18 +28,14 @@ proxy-groups:
       - 美国节点
       - 韩国节点
       - DIRECT
-  - name: 💬AI平台
+  - name: 🤖OpenAI
     type: select
     proxies:
-      - ➡️节点选择
-      - 🔄自动测速
       - 狮城节点
-      - 香港节点
       - 台湾节点
       - 日本节点
       - 美国节点
       - 韩国节点
-      - DIRECT
   - name: 📹油管视频
     type: select
     proxies:
@@ -78,10 +74,9 @@ proxy-groups:
       - 台湾节点
       - 狮城节点
       - 日本节点
-  - name: 📢谷歌FCM
+  - name: 🌌Google
     type: select
     proxies:
-      - DIRECT
       - ➡️节点选择
       - 美国节点
       - 香港节点
@@ -202,7 +197,7 @@ rule-providers:
     type: http
     url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geoip/google.yaml
     interval: 600
-    proxy: DIRECT
+    proxy: ➡️节点选择
     behavior: ipcidr
     format: yaml
     size-limit: 0
@@ -210,7 +205,19 @@ rule-providers:
     type: http
     url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/google.yaml
     interval: 600
-    proxy: DIRECT
+    proxy: ➡️节点选择
     behavior: domain
     format: yaml
     size-limit: 0
+  openai-geosite:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/openai.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+rule:
+  - RULE-SET,google-geoip,🌌Google
+  - RULE-SET,google-geosite,🌌Google
+  - RULE-SET,openai-geosite,🤖OpenAI
