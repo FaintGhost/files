@@ -217,7 +217,7 @@ rule-providers:
     behavior: domain
     format: yaml
     size-limit: 0
-rule:
+rules:
   - RULE-SET,google-geoip,🌌Google
   - RULE-SET,google-geosite,🌌Google
   - RULE-SET,openai-geosite,🤖OpenAI
