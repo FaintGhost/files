@@ -307,7 +307,7 @@ rules:
   - RULE-SET,geosite-whatsapp,WhatsApp
   - RULE-SET,geosite-linkedin,Linkedin
   - RULE-SET,geosite-apple,Apple
-  - RULE-SET,geosite-ondrive,Microsoft
+  - RULE-SET,geosite-onedrive,Microsoft
   - RULE-SET,geosite-microsoft,Microsoft
   - RULE-SET,geosite-teamviewer,Teamviewer
   - RULE-SET,geosite-bilibili,哔哩哔哩
