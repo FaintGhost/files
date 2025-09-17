@@ -24,7 +24,7 @@ proxy-groups:
       - 日本节点
       - 美国节点
       - 韩国节点
-  - name: 油管视频
+  - name: YouTube
     type: select
     proxies:
       - ➡️节点选择
@@ -42,26 +42,18 @@ proxy-groups:
       - 全球直连
       - 台湾节点
       - 香港节点
-  - name: 国外媒体
+  - name: Microsoft
     type: select
     proxies:
       - ➡️节点选择
       - 🔄自动测速
+      - DIRECT
       - 香港节点
       - 台湾节点
       - 狮城节点
       - 日本节点
       - 美国节点
       - 韩国节点
-      - DIRECT
-  - name: 国内媒体
-    type: select
-    proxies:
-      - DIRECT
-      - 香港节点
-      - 台湾节点
-      - 狮城节点
-      - 日本节点
   - name: Google
     type: select
     proxies:
@@ -86,6 +78,17 @@ proxy-groups:
     type: select
     proxies:
       - ➡️节点选择
+      - 美国节点
+      - 香港节点
+      - 台湾节点
+      - 狮城节点
+      - 日本节点
+      - 韩国节点
+  - name: Teamviewer
+    type: seletc
+    proxies:
+      - ➡️节点选择
+      - direct
       - 美国节点
       - 香港节点
       - 台湾节点
@@ -227,6 +230,70 @@ rule-providers:
     behavior: domain
     format: yaml
     size-limit: 0
+  geosite-youtube:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/youtube.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+  geosite-onedrive:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/onedrive.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+  geosite-microsoft:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/microsoft.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+  geosite-bilibili:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/bilibili.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+  geosite-geolocation-cn:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/geolocation-cn.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+  geosite-geolocation-!cn:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/geolocation-!cn.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+  geosite-cateogry-ads-all:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/category-ads-all.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
+  geosite-teamviewer:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/teamviewer.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
 rules:
   - DOMAIN,sub.novastar.wiki,➡️节点选择
   - DOMAIN,www.novastar.tech,➡️节点选择
@@ -235,10 +302,18 @@ rules:
   - DOMAIN-SUFFIX,novaops.tech,DIRECT
   - RULE-SET,geoip-google,Google
   - RULE-SET,geosite-google,Google
+  - RULE-SET,geosite-youtube.YouTube
   - RULE-SET,geosite-openai,OpenAI
   - RULE-SET,geosite-whatsapp,WhatsApp
   - RULE-SET,geosite-linkedin,Linkedin
   - RULE-SET,geosite-apple,Apple
+  - RULE-SET,geosite-ondrive,Microsoft
+  - RULE-SET,geosite-microsoft,Microsoft
+  - RULE-SET,geosite-teamviewer,Teamviewer
+  - RULE-SET,geosite-bilibili,哔哩哔哩
   - RULE-SET,geoip-cn,全球直连
   - RULE-SET,geosite-private,全球直连
+  - RULE-SET,geosite-geolocation-cn,全球直连
+  - RULE-SET,geosite-geolocation-!cn,➡️节点选择
+  - RULE-SET,geosite-cateogry-ads-all,广告拦截
   - MATCH,漏网之鱼
