@@ -218,6 +218,9 @@ rule-providers:
     format: yaml
     size-limit: 0
 rules:
+  - DOMAIN-SUFFIX,novastar.tech,DIRECT
+  - DOMAIN-SUFFIX,novastar.online,DIRECT
+  - DOMAIN-SUFFIX,novaops.tech,DIRECT
   - DOMAIN,sub.novastar.wiki,➡️节点选择
   - RULE-SET,google-geoip,🌌Google
   - RULE-SET,google-geosite,🌌Google
