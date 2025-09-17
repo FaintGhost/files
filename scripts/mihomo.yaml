@@ -197,10 +197,19 @@ proxy-groups:
     tolerance: 50
     proxies: []
 rule-providers:
-  google-geosite:
+  google-geoip:
     type: http
     url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geoip/google.yaml
     interval: 600
     proxy: DIRECT
-    format: mrs
+    behavior: ipcidr
+    format: yaml
+    size-limit: 0
+  google-geosite:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/google.yaml
+    interval: 600
+    proxy: DIRECT
+    behavior: domain
+    format: yaml
     size-limit: 0
