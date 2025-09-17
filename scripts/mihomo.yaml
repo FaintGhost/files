@@ -51,25 +51,6 @@ proxy-groups:
       - 美国节点
       - 韩国节点
       - DIRECT
-  - name: 🎥 奈飞视频
-    type: select
-    proxies:
-      - 🎥 奈飞节点
-      - ➡️节点选择
-      - 🔄自动测速
-      - 狮城节点
-      - 香港节点
-      - 台湾节点
-      - 日本节点
-      - 美国节点
-      - 韩国节点
-      - DIRECT
-  - name: 📺 巴哈姆特
-    type: select
-    proxies:
-      - 台湾节点
-      - ➡️节点选择
-      - DIRECT
   - name: 📺 哔哩哔哩
     type: select
     proxies:
