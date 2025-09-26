@@ -8,7 +8,7 @@
       "external_controller": "0.0.0.0:9090",
       "external_ui": "ui",
       "external_ui_download_url": "https://github.com/Zephyruso/zashboard/releases/latest/download/dist-cdn-fonts.zip",
-      "external_ui_download_detour": "➡️节点选择",
+      "external_ui_download_detour": "⬆️出站节点",
       "secret": "",
       "default_mode": "rule"
     },
@@ -24,7 +24,7 @@
         "tag": "proxyDns",
         "type": "tls",
         "server": "1.1.1.1",
-        "detour": "➡️节点选择"
+        "detour": "⬆️出站节点"
       },
       {
         "tag": "localDns",
@@ -456,7 +456,10 @@
         "mode": "and",
         "rules": [
           {
-            "process_name": "sing-box.exe"
+            "process_name": [
+              "sing-box.exe",
+              "sing-box"
+            ]
           },
           {
             "port": [
@@ -469,8 +472,21 @@
         "outbound": "direct"
       },
       {
+        "domain": [
+          "www.novastar.tech",
+          "oss.novastar.tech",
+          "us.vnnox.com",
+          "eu.vnnox.com",
+          "au.vnnox.com",
+          "in.vnnox.com"
+        ],
+        "outbound": "⬆️出站节点"
+      },
+      {
         "domain_suffix": [
-          "novastar-led.cn"
+          "novastar-led.cn",
+          "pingjl.com",
+          "pingboss.com"
         ],
         "outbound": "direct"
       },
@@ -540,7 +556,7 @@
       },
       {
         "clash_mode": "global",
-        "outbound": "➡️节点选择"
+        "outbound": "⬆️出站节点"
       },
       {
         "port": [
