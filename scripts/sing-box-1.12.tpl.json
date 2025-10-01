@@ -83,10 +83,10 @@
     {
       "type": "tun",
       "address": "172.18.0.1/30",
-      "mtu": 9000,
+      "mtu": 1480,
       "auto_route": true,
       "strict_route": true,
-      "endpoint_independent_nat": false,
+      "endpoint_independent_nat": true,
       "stack": "system",
       "domain_strategy": "prefer_ipv4"
     },
@@ -489,24 +489,6 @@
           "pingboss.com"
         ],
         "outbound": "direct"
-      },
-      {
-        "domain_suffix": [
-          "taobao.com",
-          "jd.com",
-          "bilibili.com",
-          "tmall.com",
-          "360buyimg.com",
-          "jdcloud.com",
-          "jingdong.com",
-          "vipmro.com",
-          "yiyaojd.com",
-          "jdh.com",
-          "7fresh.com",
-          "jingxi.com",
-          "jkcsjd.com"
-        ],
-        "outbound": "🏠回家节点"
       },
       {
         "ip_cidr": [
