@@ -217,8 +217,7 @@
       "tag": "🏠回家节点",
       "type": "selector",
       "outbounds": [
-        "direct",
-        "home"
+        "direct"
       ]
     },
     {

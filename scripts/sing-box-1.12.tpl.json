@@ -220,7 +220,6 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "home",
         "ts-ep"
       ]
     },
