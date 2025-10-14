@@ -362,17 +362,6 @@
       ]
     },
     {
-      "tag": "📺Bilibili",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "⬆️出站节点",
-        "🧧香港节点",
-        "🧋台湾节点",
-        "🏠回家节点"
-      ]
-    },
-    {
       "tag": "🎬MediaVideo",
       "type": "selector",
       "outbounds": [
@@ -623,13 +612,6 @@
       },
       {
         "rule_set": [
-          "geoip-bilibili",
-          "geosite-bilibili"
-        ],
-        "outbound": "📺Bilibili"
-      },
-      {
-        "rule_set": [
           "geoip-netflix",
           "geosite-netflix",
           "geosite-hbo",
@@ -647,6 +629,8 @@
         "rule_set": [
           "geoip-cn",
           "geosite-cn",
+          "geoip-bilibili",
+          "geosite-bilibili",
           "geosite-steam@cn"
         ],
         "outbound": "🌏cn"

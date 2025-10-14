@@ -99,13 +99,6 @@
       }
     },
     {
-      "type": "http",
-      "listen": "127.0.0.1",
-      "listen_port": 2081,
-      "sniff": true,
-      "users": []
-    },
-    {
       "type": "mixed",
       "listen": "0.0.0.0",
       "listen_port": 2080,
@@ -366,18 +359,6 @@
       ]
     },
     {
-      "tag": "📺Bilibili",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🛬落地节点",
-        "🧧香港节点",
-        "🧋台湾节点",
-        "🏠回家节点"
-
-      ]
-    },
-    {
       "tag": "🎬MediaVideo",
       "type": "selector",
       "outbounds": [
@@ -446,24 +427,6 @@
       {
         "protocol": "dns",
         "action": "hijack-dns"
-      },
-      {
-        "domain_suffix": [
-          "taobao.com",
-          "jd.com",
-          "bilibili.com",
-          "tmall.com",
-          "360buyimg.com",
-          "jdcloud.com",
-          "jingdong.com",
-          "vipmro.com",
-          "yiyaojd.com",
-          "jdh.com",
-          "7fresh.com",
-          "jingxi.com",
-          "jkcsjd.com"
-        ],
-        "outbound": "🏠回家节点"
       },
       {
         "domain": [
@@ -626,13 +589,6 @@
       },
       {
         "rule_set": [
-          "geoip-bilibili",
-          "geosite-bilibili"
-        ],
-        "outbound": "📺Bilibili"
-      },
-      {
-        "rule_set": [
           "geoip-netflix",
           "geosite-netflix",
           "geosite-hbo",
@@ -653,6 +609,8 @@
         "rule_set": [
           "geoip-cn",
           "geosite-cn",
+          "geoip-bilibili",
+          "geosite-bilibili",
           "geosite-steam@cn"
         ],
         "outbound": "🌏cn"
