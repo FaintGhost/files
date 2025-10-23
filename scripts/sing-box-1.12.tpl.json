@@ -550,9 +550,16 @@
       },
       {
         "rule_set": [
+          "geosite-googlefcm"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
           "geosite-youtube",
           "geoip-google",
-          "geosite-google"
+          "geosite-google",
+          "geosite-googlefcm@!cn"
         ],
         "outbound": "🌌Google"
       },
@@ -774,6 +781,20 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/google.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-googlefcm",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/googlefcm.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-googlefcm@!cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/googlefcm@!cn.srs",
         "download_detour": "direct"
       },
       {
