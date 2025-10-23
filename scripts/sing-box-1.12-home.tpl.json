@@ -459,16 +459,11 @@
       },
       {
         "rule_set": [
-          "geosite-googlefcm"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
           "geosite-youtube",
           "geoip-google",
           "geosite-google",
-          "geosite-googlefcm@!cn"
+          "geosite-googlefcm@!cn",
+          "geosite-googlefcm"
         ],
         "outbound": "🌌Google"
       },
