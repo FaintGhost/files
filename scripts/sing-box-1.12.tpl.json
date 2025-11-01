@@ -440,6 +440,10 @@
         "action": "hijack-dns"
       },
       {
+        "protocol": "quic",
+        "outbound": "🛑AdBlock"
+      },
+      {
         "type": "logical",
         "mode": "and",
         "rules": [

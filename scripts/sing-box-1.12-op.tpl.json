@@ -407,6 +407,10 @@
         "action": "hijack-dns"
       },
       {
+        "protocol": "quic",
+        "outbound": "🛑AdBlock"
+      },
+      {
         "domain_suffix": [
           "adobe.io",
           "adobestats.io"
