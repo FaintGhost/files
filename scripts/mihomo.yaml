@@ -304,6 +304,7 @@ rules:
   - DOMAIN-SUFFIX,novastar.tech,DIRECT
   - DOMAIN-SUFFIX,novastar.online,DIRECT
   - DOMAIN-SUFFIX,novaops.tech,DIRECT
+  - IP-CIDR,172.16.91.11/32,DIRECT,no-resolve
   - RULE-SET,geoip-google,Google
   - RULE-SET,geosite-google,Google
   - RULE-SET,geosite-youtube,YouTube
