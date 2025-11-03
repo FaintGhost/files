@@ -540,13 +540,16 @@
         "outbound": "🌏!cn"
       },
       {
-        "ip_is_private": true,
         "rule_set": [
           "geoip-cn",
           "geosite-cn",
           "geosite-steam@cn"
         ],
         "outbound": "🌏cn"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
       }
     ],
     "rule_set": [
