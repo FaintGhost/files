@@ -549,6 +549,9 @@
       },
       {
         "ip_is_private": true,
+        "rule_set": [
+          "geosite-private"
+        ],
         "outbound": "direct"
       }
     ],
