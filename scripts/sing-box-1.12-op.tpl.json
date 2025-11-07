@@ -24,7 +24,7 @@
         "tag": "proxyDns",
         "type": "tls",
         "server": "1.1.1.1",
-        "detour": "➡️节点选择"
+        "detour": "⬆️出站节点"
       },
       {
         "tag": "localDns",
@@ -87,13 +87,6 @@
       "endpoint_independent_nat": false,
       "stack": "system",
       "domain_strategy": "prefer_ipv4"
-    },
-    {
-      "type": "mixed",
-      "listen": "0.0.0.0",
-      "listen_port": 2080,
-      "sniff": true,
-      "users": []
     }
   ],
   "endpoints": [],
