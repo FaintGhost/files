@@ -11,7 +11,8 @@
         "WXWorkWeb.exe",
         "tailscaled.exe",
         "tailscale-ipn.exe",
-        "tailscale.exe"
+        "tailscale.exe",
+        "O+Connect.exe"
       ]
     },
     {
