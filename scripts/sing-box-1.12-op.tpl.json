@@ -418,18 +418,24 @@
         "outbound": "🛑AdBlock"
       },
       {
-        "rule_set": [
-          "geosite-custom-direct"
-        ],
         "domain_keyword": [
           "tailscale"
         ],
+        "outbound": "自定义直连"
+      },
+      {
         "port": [
           4430,
           8443,
           3478,
           43443,
           43478
+        ],
+        "outbound": "自定义直连"
+      },
+      {
+        "rule_set": [
+          "geosite-custom-direct"
         ],
         "outbound": "自定义直连"
       },
