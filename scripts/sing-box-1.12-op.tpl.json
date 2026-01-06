@@ -424,6 +424,13 @@
         "domain_keyword": [
           "tailscale"
         ],
+        "port": [
+          4430,
+          8443,
+          3478,
+          43443,
+          43478
+        ],
         "outbound": "自定义直连"
       },
       {
