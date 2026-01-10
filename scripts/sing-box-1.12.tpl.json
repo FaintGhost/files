@@ -675,7 +675,7 @@
       {
         "tag": "geosite-novastar",
         "type": "remote",
-        "format": "binary",
+        "format": "source",
         "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.json",
         "download_detour": "direct"
       },
