@@ -676,8 +676,8 @@
         "tag": "geosite-novastar",
         "type": "remote",
         "format": "source",
-        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.json",
-        "download_detour": "direct"
+        "url": "https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json",
+        "download_detour": "⬆️出站节点"
       },
       {
         "tag": "geosite-game",
