@@ -44,18 +44,21 @@
     ],
     "rules": [
       {
-        "domain_suffix": [
-          "novastar.tech",
-          "novaops.tech",
-          "novastar.online"
-        ],
+        "rule_set": "geosite-category-ads-all",
+        "action": "predefined",
+        "rcode": "NOERROR"
+      },
+      {
+        "rule_set": "geosite-novastar-internal",
         "action": "route",
         "server": "hosts"
       },
       {
-        "rule_set": "geosite-category-ads-all",
-        "action": "predefined",
-        "rcode": "NOERROR"
+        "domain_suffix": [
+          "novastar.tech"
+        ],
+        "action": "route",
+        "server": "proxyDns"
       },
       {
         "rule_set": "geosite-cn",
@@ -465,19 +468,6 @@
         "outbound": "direct"
       },
       {
-        "domain": [
-          "www.novastar.tech",
-          "oss.novastar.tech",
-          "us.vnnox.com",
-          "eu.vnnox.com",
-          "au.vnnox.com",
-          "in.vnnox.com",
-          "api.coex.en.novastar.tech",
-          "openapi.novastar.tech"
-        ],
-        "outbound": "⬆️出站节点"
-      },
-      {
         "domain_suffix": [
           "novastar-led.cn",
           "pingjl.com",
@@ -512,7 +502,7 @@
         "outbound": "自定义代理"
       },
       {
-        "rule_set": "geosite-novastar",
+        "rule_set": "geosite-novastar-internal",
         "outbound": "⭐NovaStar"
       },
       {
@@ -673,7 +663,7 @@
         "download_detour": "direct"
       },
       {
-        "tag": "geosite-novastar",
+        "tag": "geosite-novastar-internal",
         "type": "remote",
         "format": "source",
         "url": "https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json",
