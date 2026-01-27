@@ -38,6 +38,16 @@ proxy-groups:
       - 狮城节点
       - 日本节点
       - 韩国节点
+  - name: Google Gemini
+    type: select
+    proxies:
+      - 美国节点
+      - ➡️节点选择
+      - 香港节点
+      - 台湾节点
+      - 狮城节点
+      - 日本节点
+      - 韩国节点
   - name: YouTube
     type: select
     proxies:
@@ -186,6 +196,14 @@ rule-providers:
     behavior: domain
     format: yaml
     size-limit: 0
+  geosite-gemini:
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/google-gemini.yaml
+    interval: 600
+    proxy: ➡️节点选择
+    behavior: domain
+    format: yaml
+    size-limit: 0
   geosite-openai:
     type: http
     url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@refs/heads/meta/geo/geosite/openai.yaml
@@ -307,6 +325,7 @@ rules:
   - IP-CIDR,172.16.91.11/32,DIRECT,no-resolve
   - RULE-SET,geoip-google,Google
   - RULE-SET,geosite-google,Google
+  - RULE-SET,geosite-gemini,Google Gemini
   - RULE-SET,geosite-youtube,YouTube
   - RULE-SET,geosite-openai,OpenAI
   - RULE-SET,geosite-whatsapp,WhatsApp
