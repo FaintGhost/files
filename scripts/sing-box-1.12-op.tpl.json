@@ -108,6 +108,11 @@
       ]
     },
     {
+      "tag": "⬆️AI专用出站",
+      "type": "selector",
+      "outbounds": []
+    },
+    {
       "tag": "🛬落地节点",
       "type": "selector",
       "outbounds": []
@@ -192,29 +197,14 @@
       ]
     },
     {
-      "tag": "🔥Cloudflare",
+      "tag": "🤖AI",
       "type": "selector",
       "outbounds": [
+        "⬆️AI专用出站",
         "⬆️出站节点",
-        "🧧香港节点",
-        "🧋台湾节点",
-        "🦁狮城节点",
-        "⛩️日本节点",
-        "🗽美国节点",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🤖OpenAI",
-      "type": "selector",
-      "outbounds": [
-        "⬆️出站节点",
-        "🦁狮城节点",
-        "🧋台湾节点",
-        "⛩️日本节点",
         "🗽美国节点"
       ],
-      "default": "⬆️出站节点"
+      "default": "⬆️AI专用出站"
     },
     {
       "tag": "🌌Google",
@@ -466,17 +456,11 @@
       },
       {
         "rule_set": [
-          "geoip-cloudflare",
-          "geosite-cloudflare"
-        ],
-        "outbound": "🔥Cloudflare"
-      },
-      {
-        "rule_set": [
+          "geosite-ai",
           "geosite-openai",
           "geosite-claude"
         ],
-        "outbound": "🤖OpenAI"
+        "outbound": "🤖AI"
       },
       {
         "rule_set": [
@@ -587,20 +571,6 @@
         "download_detour": "direct"
       },
       {
-        "tag": "geoip-cloudflare",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cloudflare.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geosite-cloudflare",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/cloudflare.srs",
-        "download_detour": "direct"
-      },
-      {
         "tag": "geoip-google",
         "type": "remote",
         "format": "binary",
@@ -668,6 +638,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/anthropic.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-ai",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/category-ai-chat-!cn.srs",
         "download_detour": "direct"
       },
       {
