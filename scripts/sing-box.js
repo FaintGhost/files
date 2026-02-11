@@ -57,8 +57,8 @@ function parseRelayMap(rawRelayMap) {
         return null;
       }
 
-      const from = normalizeRelayTag(item.slice(0, index).trim());
-      const to = normalizeRelayTag(item.slice(index + 1).trim());
+      const from = item.slice(0, index).trim();
+      const to = item.slice(index + 1).trim();
       if (!from || !to) {
         return null;
       }
@@ -95,6 +95,23 @@ function normalizeRelayTag(rawTag) {
   return aliasMap[key] || rawTag;
 }
 
+function resolveTag(outboundMap, rawTag, options = {}) {
+  if (!rawTag) {
+    return rawTag;
+  }
+
+  if (outboundMap.has(rawTag)) {
+    return rawTag;
+  }
+
+  const normalized = normalizeRelayTag(rawTag);
+  if (outboundMap.has(normalized)) {
+    return normalized;
+  }
+
+  return options.allowMissing ? normalized : null;
+}
+
 function applyRelayMap(config, mappings) {
   if (!Array.isArray(mappings) || mappings.length === 0) {
     return;
@@ -104,11 +121,13 @@ function applyRelayMap(config, mappings) {
   const outboundMap = new Map(outbounds.map(item => [item.tag, item]));
 
   for (const { from, to } of mappings) {
-    if (!outboundMap.has(from)) {
+    const resolvedFrom = resolveTag(outboundMap, from);
+    const resolvedTo = resolveTag(outboundMap, to, { allowMissing: true });
+    if (!resolvedFrom || !resolvedTo || !outboundMap.has(resolvedFrom)) {
       continue;
     }
 
-    const targetTags = collectRelayTargetTags(from, outboundMap);
+    const targetTags = collectRelayTargetTags(resolvedFrom, outboundMap);
 
     for (const tag of targetTags) {
       const target = outboundMap.get(tag);
@@ -116,11 +135,15 @@ function applyRelayMap(config, mappings) {
         continue;
       }
 
-      if (['direct', 'block', to].includes(tag)) {
+      if (['direct', 'block', resolvedTo].includes(tag)) {
         continue;
       }
 
-      target.detour = to;
+      if (['selector', 'urltest'].includes(target.type)) {
+        continue;
+      }
+
+      target.detour = resolvedTo;
     }
   }
 }
