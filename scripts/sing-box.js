@@ -3,21 +3,15 @@ const profile = normalizeProfile(args.profile || args.mode);
 
 let config = JSON.parse($files[0]);
 
-const artifactType = /^1$|col|collection/i.test(String(args.type || 'collection'))
-  ? 'collection'
-  : 'subscription';
-const artifactName = args.name || '组合订阅';
+const collectionName = parseString(args.collection);
+const subscriptionNames = parseList(args.subscription);
 
-let proxies = await produceArtifact({
-  type: artifactType,
-  name: artifactName,
-  platform: 'sing-box',
-  produceType: 'internal'
+assertProxySources(collectionName, subscriptionNames);
+
+let proxies = await buildProxies({
+  collectionName,
+  subscriptionNames
 });
-
-if (!Array.isArray(proxies)) {
-  proxies = [];
-}
 
 config.outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
 config.outbounds.push(...proxies);
@@ -30,7 +24,11 @@ applyRelayMap(config, parseRelayMap(args.relay_map));
 $content = JSON.stringify(config, null, 2);
 
 function normalizeProfile(rawProfile) {
-  const value = String(rawProfile || 'company').toLowerCase();
+  if (rawProfile === undefined || rawProfile === null || String(rawProfile).trim() === '') {
+    throw new Error('配置非法：必须通过参数提供 profile（company/home/op）');
+  }
+
+  const value = String(rawProfile).toLowerCase();
   if (['op', 'office', 'work'].includes(value)) {
     return 'op';
   }
@@ -40,7 +38,49 @@ function normalizeProfile(rawProfile) {
   if (['full', 'company', 'corp'].includes(value)) {
     return 'company';
   }
-  return 'company';
+
+  throw new Error(`配置非法：不支持的 profile=${rawProfile}，可选 company/home/op`);
+}
+
+function assertProxySources(collectionName, subscriptionNames) {
+  if (collectionName || subscriptionNames.length > 0) {
+    return;
+  }
+
+  throw new Error('配置非法：必须通过参数提供 collection 或 subscription');
+}
+
+async function buildProxies({ collectionName, subscriptionNames }) {
+  const tasks = [];
+
+  if (collectionName) {
+    tasks.push(
+      produceArtifact({
+        type: 'collection',
+        name: collectionName,
+        platform: 'sing-box',
+        produceType: 'internal'
+      })
+    );
+  }
+
+  for (const name of subscriptionNames) {
+    tasks.push(
+      produceArtifact({
+        type: 'subscription',
+        name,
+        platform: 'sing-box',
+        produceType: 'internal'
+      })
+    );
+  }
+
+  const results = await Promise.all(tasks);
+  return uniqByTag(
+    results
+      .flat()
+      .filter(item => item && typeof item === 'object' && item.tag)
+  );
 }
 
 function applyTunOverrides(config, args) {
@@ -463,6 +503,17 @@ function hasOwn(source, key) {
   return source && Object.prototype.hasOwnProperty.call(source, key);
 }
 
+function parseList(value) {
+  if (value === undefined || value === null) {
+    return [];
+  }
+
+  return String(value)
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
 function parseString(value) {
   if (value === undefined || value === null) {
     return undefined;
@@ -503,4 +554,19 @@ function containsAny(source, values) {
 
 function uniq(items) {
   return Array.from(new Set(items));
+}
+
+function uniqByTag(items) {
+  const seen = new Set();
+  const result = [];
+
+  for (const item of items) {
+    if (!item?.tag || seen.has(item.tag)) {
+      continue;
+    }
+    seen.add(item.tag);
+    result.push(item);
+  }
+
+  return result;
 }
