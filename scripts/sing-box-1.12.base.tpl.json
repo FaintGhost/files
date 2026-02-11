@@ -71,6 +71,7 @@
       "address": "172.18.0.1/30",
       "mtu": 9000,
       "auto_route": true,
+      "auto_redirect": false,
       "strict_route": true,
       "endpoint_independent_nat": true,
       "stack": "system",
@@ -89,11 +90,7 @@
     {
       "tag": "⬆️出站节点",
       "type": "selector",
-      "outbounds": [
-        "🛬落地节点",
-        "➡️节点选择",
-        "direct"
-      ]
+      "outbounds": ["🛬落地节点", "➡️节点选择", "direct"]
     },
     {
       "tag": "⬆️AI专用出站",
@@ -108,18 +105,12 @@
     {
       "tag": "🚪前置节点",
       "type": "selector",
-      "outbounds": [
-        "➡️节点选择",
-        "direct"
-      ]
+      "outbounds": ["➡️节点选择", "direct"]
     },
     {
       "tag": "➡️节点选择",
       "type": "selector",
-      "outbounds": [
-        "🔄自动测速",
-        "direct"
-      ]
+      "outbounds": ["🔄自动测速", "direct"]
     },
     {
       "tag": "🔄自动测速",
@@ -170,44 +161,27 @@
     {
       "tag": "🦅美国原生",
       "type": "selector",
-      "outbounds": [
-        "🗽美国节点",
-        "direct"
-      ]
+      "outbounds": ["🗽美国节点", "direct"]
     },
     {
       "tag": "自定义直连",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "⬆️出站节点"
-      ]
+      "outbounds": ["direct", "⬆️出站节点"]
     },
     {
       "tag": "自定义代理",
       "type": "selector",
-      "outbounds": [
-        "⬆️出站节点",
-        "➡️节点选择",
-        "direct"
-      ]
+      "outbounds": ["⬆️出站节点", "➡️节点选择", "direct"]
     },
     {
       "tag": "🏠回家节点",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "ts-ep"
-      ]
+      "outbounds": ["direct", "ts-ep"]
     },
     {
       "tag": "🤖AI",
       "type": "selector",
-      "outbounds": [
-        "⬆️AI专用出站",
-        "⬆️出站节点",
-        "🗽美国节点"
-      ],
+      "outbounds": ["⬆️AI专用出站", "⬆️出站节点", "🗽美国节点"],
       "default": "⬆️AI专用出站"
     },
     {
@@ -351,27 +325,17 @@
     {
       "tag": "🌏cn",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "➡️节点选择",
-        "🏠回家节点"
-      ]
+      "outbounds": ["direct", "➡️节点选择", "🏠回家节点"]
     },
     {
       "tag": "🐟漏网之鱼",
       "type": "selector",
-      "outbounds": [
-        "⬆️出站节点",
-        "direct"
-      ]
+      "outbounds": ["⬆️出站节点", "direct"]
     },
     {
       "tag": "🛑AdBlock",
       "type": "selector",
-      "outbounds": [
-        "block",
-        "direct"
-      ]
+      "outbounds": ["block", "direct"]
     },
     {
       "type": "direct",
@@ -403,45 +367,28 @@
         "mode": "and",
         "rules": [
           {
-            "process_name": [
-              "sing-box.exe",
-              "sing-box"
-            ]
+            "process_name": ["sing-box.exe", "sing-box"]
           },
           {
-            "port": [
-              4430,
-              8443,
-              3478
-            ]
+            "port": [4430, 8443, 3478]
           }
         ],
         "outbound": "direct"
       },
       {
-        "ip_cidr": [
-          "192.168.50.0/24"
-        ],
+        "ip_cidr": ["192.168.50.0/24"],
         "outbound": "🏠回家节点"
       },
       {
-        "domain_suffix": [
-          "adobe.io",
-          "adobestats.io"
-        ],
+        "domain_suffix": ["adobe.io", "adobestats.io"],
         "outbound": "🛑AdBlock"
       },
       {
-        "rule_set": [
-          "geosite-custom-direct"
-        ],
+        "rule_set": ["geosite-custom-direct"],
         "outbound": "自定义直连"
       },
       {
-        "rule_set": [
-          "geosite-custom-proxy",
-          "geosite-teamviewer"
-        ],
+        "rule_set": ["geosite-custom-proxy", "geosite-teamviewer"],
         "outbound": "自定义代理"
       },
       {
@@ -461,41 +408,23 @@
         "outbound": "⬆️出站节点"
       },
       {
-        "rule_set": [
-          "geosite-ai",
-          "geosite-openai",
-          "geosite-claude"
-        ],
+        "rule_set": ["geosite-ai", "geosite-openai", "geosite-claude"],
         "outbound": "🤖AI"
       },
       {
-        "rule_set": [
-          "geoip-google",
-          "geosite-google",
-          "geosite-googlefcm@!cn"
-        ],
+        "rule_set": ["geoip-google", "geosite-google", "geosite-googlefcm@!cn"],
         "outbound": "🌌Google"
       },
       {
-        "rule_set": [
-          "geosite-github",
-          "geosite-container",
-          "geosite-docker"
-        ],
+        "rule_set": ["geosite-github", "geosite-container", "geosite-docker"],
         "outbound": "🐙GitHub"
       },
       {
-        "rule_set": [
-          "geoip-apple",
-          "geosite-apple",
-          "geosite-applemusic"
-        ],
+        "rule_set": ["geoip-apple", "geosite-apple", "geosite-applemusic"],
         "outbound": "🍎Apple"
       },
       {
-        "rule_set": [
-          "geosite-onedrive"
-        ],
+        "rule_set": ["geosite-onedrive"],
         "outbound": "💿OneDrive"
       },
       {
@@ -503,17 +432,11 @@
         "outbound": "🧩Microsoft"
       },
       {
-        "rule_set": [
-          "geoip-telegram",
-          "geosite-telegram"
-        ],
+        "rule_set": ["geoip-telegram", "geosite-telegram"],
         "outbound": "📟Telegram"
       },
       {
-        "rule_set": [
-          "geoip-twitter",
-          "geosite-twitter"
-        ],
+        "rule_set": ["geoip-twitter", "geosite-twitter"],
         "outbound": "🐦Twitter"
       },
       {
@@ -556,9 +479,7 @@
       },
       {
         "ip_is_private": true,
-        "rule_set": [
-          "geosite-private"
-        ],
+        "rule_set": ["geosite-private"],
         "outbound": "direct"
       }
     ],
