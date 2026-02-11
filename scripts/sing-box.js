@@ -18,6 +18,8 @@ config.outbounds.push(...proxies);
 
 injectProxiesByGroupRules(config, proxies);
 applyProfile(config, profile);
+applyNovastarFeatures(config, resolveNovastarEnabled(args, profile));
+applyTailscaleEndpoint(config, parseTailscaleOption(args.tailscale));
 applyTunOverrides(config, args);
 applyRelayMap(config, parseRelayMap(args.relay_map));
 
@@ -81,6 +83,223 @@ async function buildProxies({ collectionName, subscriptionNames }) {
       .flat()
       .filter(item => item && typeof item === 'object' && item.tag)
   );
+}
+
+function resolveNovastarEnabled(args, profile) {
+  const parsed = parseBoolean(args.novastar_hosts);
+  if (parsed !== undefined) {
+    return parsed;
+  }
+
+  const parsedAlias = parseBoolean(args.novastar);
+  if (parsedAlias !== undefined) {
+    return parsedAlias;
+  }
+
+  return profile === 'company';
+}
+
+function applyNovastarFeatures(config, enabled) {
+  const novastarHosts = {
+    'oa.novastar.tech': '172.16.81.12',
+    'ehr.novastar.tech': '172.16.80.109',
+    'ai.novaops.tech': '172.16.80.99',
+    'pwd.novastar.tech': '172.16.81.66',
+    'iam-idp.novastar.tech': '172.16.91.27',
+    'iam.novastar.tech': '172.16.91.27',
+    'wiki.novastar.tech': '172.16.81.222',
+    'novaehr.novastar.tech': '172.16.91.76',
+    'alm.novatools.vip': '172.16.81.11',
+    'ai-meeting.novastar.tech': '172.16.91.232',
+    'e-bridge.novastar.tech': '172.16.91.42',
+    'ai-portal.novastar.tech': '172.16.91.232'
+  };
+
+  const dns = config.dns || {};
+  dns.servers = Array.isArray(dns.servers) ? dns.servers : [];
+  dns.rules = Array.isArray(dns.rules) ? dns.rules : [];
+
+  const route = config.route || {};
+  route.rules = Array.isArray(route.rules) ? route.rules : [];
+  route.rule_set = Array.isArray(route.rule_set) ? route.rule_set : [];
+
+  config.outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
+
+  if (enabled) {
+    upsertHostsServer(dns, novastarHosts);
+    ensureDnsRule(dns.rules, {
+      rule_set: 'geosite-novastar-internal',
+      action: 'route',
+      server: 'hosts'
+    }, 1);
+    ensureDnsRule(dns.rules, {
+      domain_suffix: ['novastar.tech'],
+      action: 'route',
+      server: 'proxyDns'
+    }, 2);
+
+    ensureOutbound(config.outbounds, {
+      tag: '⭐NovaStar',
+      type: 'selector',
+      outbounds: ['direct']
+    });
+
+    ensureRouteRule(route.rules, {
+      domain_suffix: ['novastar-led.cn', 'pingjl.com', 'pingboss.com'],
+      outbound: 'direct'
+    }, 5);
+    ensureRouteRule(route.rules, {
+      rule_set: 'geosite-novastar-internal',
+      outbound: '⭐NovaStar'
+    }, 10);
+
+    ensureRuleSet(route.rule_set, {
+      tag: 'geosite-novastar-internal',
+      type: 'remote',
+      format: 'source',
+      url: 'https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json',
+      download_detour: '⬆️出站节点'
+    });
+  } else {
+    dns.servers = dns.servers.filter(server => server?.tag !== 'hosts');
+    dns.rules = dns.rules.filter(rule => {
+      if (rule?.server === 'hosts') {
+        return false;
+      }
+      if (rule?.rule_set === 'geosite-novastar-internal') {
+        return false;
+      }
+      if (containsAny(rule?.domain_suffix, ['novastar.tech'])) {
+        return false;
+      }
+      return true;
+    });
+
+    config.outbounds = config.outbounds.filter(outbound => outbound?.tag !== '⭐NovaStar');
+
+    route.rules = route.rules.filter(rule => {
+      if (rule?.rule_set === 'geosite-novastar-internal') {
+        return false;
+      }
+      if (rule?.outbound === '⭐NovaStar') {
+        return false;
+      }
+      if (containsAny(rule?.domain_suffix, ['novastar-led.cn', 'pingjl.com', 'pingboss.com'])) {
+        return false;
+      }
+      return true;
+    });
+
+    route.rule_set = route.rule_set.filter(item => item?.tag !== 'geosite-novastar-internal');
+  }
+
+  config.dns = dns;
+  config.route = route;
+  cleanupOutboundReferences(config.outbounds);
+}
+
+function upsertHostsServer(dns, predefined) {
+  let hostsServer = dns.servers.find(server => server?.tag === 'hosts');
+  if (!hostsServer) {
+    hostsServer = {
+      type: 'hosts',
+      tag: 'hosts',
+      predefined: {}
+    };
+    dns.servers.push(hostsServer);
+  }
+
+  hostsServer.type = 'hosts';
+  hostsServer.tag = 'hosts';
+  hostsServer.predefined = { ...predefined };
+}
+
+function ensureDnsRule(rules, expectedRule, preferredIndex) {
+  if (rules.some(rule => isDnsRuleEqual(rule, expectedRule))) {
+    return;
+  }
+  rules.splice(Math.min(preferredIndex, rules.length), 0, expectedRule);
+}
+
+function ensureRouteRule(rules, expectedRule, preferredIndex) {
+  if (rules.some(rule => isRouteRuleEqual(rule, expectedRule))) {
+    return;
+  }
+  rules.splice(Math.min(preferredIndex, rules.length), 0, expectedRule);
+}
+
+function ensureRuleSet(ruleSets, expectedRuleSet) {
+  if (ruleSets.some(item => item?.tag === expectedRuleSet.tag)) {
+    return;
+  }
+  ruleSets.push(expectedRuleSet);
+}
+
+function ensureOutbound(outbounds, expectedOutbound) {
+  if (outbounds.some(item => item?.tag === expectedOutbound.tag)) {
+    return;
+  }
+  outbounds.push(expectedOutbound);
+}
+
+function isDnsRuleEqual(left, right) {
+  return JSON.stringify(left || {}) === JSON.stringify(right || {});
+}
+
+function isRouteRuleEqual(left, right) {
+  return JSON.stringify(left || {}) === JSON.stringify(right || {});
+}
+
+function parseTailscaleOption(rawValue) {
+  if (rawValue === undefined || rawValue === null) {
+    return { enabled: false };
+  }
+
+  const parts = String(rawValue)
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean);
+
+  if (parts.length === 0) {
+    return { enabled: false };
+  }
+
+  const enabled = parseBoolean(parts[0]);
+  if (enabled !== true) {
+    return { enabled: false };
+  }
+
+  const hostname = parts[1] ? parts[1] : undefined;
+  return {
+    enabled: true,
+    hostname
+  };
+}
+
+function applyTailscaleEndpoint(config, tailscaleOption) {
+  if (!tailscaleOption?.enabled) {
+    return;
+  }
+
+  config.endpoints = Array.isArray(config.endpoints) ? config.endpoints : [];
+
+  const endpoint = {
+    type: 'tailscale',
+    tag: 'ts-ep',
+    ephemeral: false,
+    accept_routes: true
+  };
+
+  if (tailscaleOption.hostname) {
+    endpoint.hostname = tailscaleOption.hostname;
+  }
+
+  const existedIndex = config.endpoints.findIndex(item => item?.tag === 'ts-ep');
+  if (existedIndex >= 0) {
+    config.endpoints[existedIndex] = endpoint;
+  } else {
+    config.endpoints.push(endpoint);
+  }
 }
 
 function applyTunOverrides(config, args) {
