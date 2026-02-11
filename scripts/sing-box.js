@@ -24,6 +24,7 @@ config.outbounds.push(...proxies);
 
 injectProxiesByGroupRules(config, proxies);
 applyProfile(config, profile);
+applyTunOverrides(config, args);
 applyRelayMap(config, parseRelayMap(args.relay_map));
 
 $content = JSON.stringify(config, null, 2);
@@ -40,6 +41,37 @@ function normalizeProfile(rawProfile) {
     return 'company';
   }
   return 'company';
+}
+
+function applyTunOverrides(config, args) {
+  const tunInbound = (config.inbounds || []).find(item => item?.type === 'tun');
+  if (!tunInbound) {
+    return;
+  }
+
+  const tunOverrideParsers = {
+    address: parseString,
+    mtu: parseNumber,
+    auto_route: parseBoolean,
+    strict_route: parseBoolean,
+    endpoint_independent_nat: parseBoolean,
+    stack: parseString,
+    domain_strategy: parseString,
+    auto_redirect: parseBoolean
+  };
+
+  for (const [key, parser] of Object.entries(tunOverrideParsers)) {
+    if (!hasOwn(args, key)) {
+      continue;
+    }
+
+    const parsed = parser(args[key]);
+    if (parsed === undefined) {
+      continue;
+    }
+
+    tunInbound[key] = parsed;
+  }
 }
 
 function parseRelayMap(rawRelayMap) {
@@ -436,6 +468,41 @@ function cleanupOutboundReferences(outbounds) {
       outbound.outbounds.filter(tag => validTags.has(tag) || ['direct', 'block'].includes(tag))
     );
   }
+}
+
+function hasOwn(source, key) {
+  return source && Object.prototype.hasOwnProperty.call(source, key);
+}
+
+function parseString(value) {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  const parsed = String(value).trim();
+  return parsed ? parsed : undefined;
+}
+
+function parseNumber(value) {
+  if (value === undefined || value === null || value === '') {
+    return undefined;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function parseBoolean(value) {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  const raw = String(value || '').trim().toLowerCase();
+  if (['1', 'true', 'yes', 'on'].includes(raw)) {
+    return true;
+  }
+  if (['0', 'false', 'no', 'off'].includes(raw)) {
+    return false;
+  }
+  return undefined;
 }
 
 function containsAny(source, values) {
