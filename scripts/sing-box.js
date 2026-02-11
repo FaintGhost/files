@@ -328,17 +328,6 @@ function applyProfile(config, profile) {
   dns.strategy = 'ipv4_only';
   config.dns = dns;
 
-  const tunInbound = (config.inbounds || []).find(item => item?.type === 'tun');
-  if (tunInbound) {
-    tunInbound.mtu = 9000;
-    tunInbound.endpoint_independent_nat = false;
-    if (profile === 'op') {
-      tunInbound.auto_redirect = true;
-    } else {
-      delete tunInbound.auto_redirect;
-    }
-  }
-
   config.outbounds = (config.outbounds || []).filter(outbound => !removedOutboundTags.has(outbound?.tag));
 
   const route = config.route || {};
