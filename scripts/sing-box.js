@@ -21,6 +21,7 @@ applyProfile(config, profile);
 applyNovastarFeatures(config, resolveNovastarEnabled(args, profile));
 applyTailscaleEndpoint(config, parseTailscaleOption(args.tailscale));
 applyTunOverrides(config, args);
+applySelectorOutboundAppend(config, parseSelectorOutboundMap(args.selector_outbound || args.selector_append));
 applyRelayMap(config, parseRelayMap(args.relay_map));
 
 $content = JSON.stringify(config, null, 2);
@@ -330,6 +331,61 @@ function applyTunOverrides(config, args) {
     }
 
     tunInbound[key] = parsed;
+  }
+}
+
+function parseSelectorOutboundMap(rawMap) {
+  if (!rawMap || typeof rawMap !== 'string') {
+    return [];
+  }
+
+  return rawMap
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean)
+    .map(item => {
+      const index = item.indexOf(':');
+      if (index <= 0 || index >= item.length - 1) {
+        return null;
+      }
+
+      const selector = item.slice(0, index).trim();
+      const outbound = item.slice(index + 1).trim();
+      if (!selector || !outbound) {
+        return null;
+      }
+
+      return { selector, outbound };
+    })
+    .filter(Boolean);
+}
+
+function applySelectorOutboundAppend(config, mappings) {
+  if (!Array.isArray(mappings) || mappings.length === 0) {
+    return;
+  }
+
+  const outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
+  const outboundMap = new Map(outbounds.map(item => [item.tag, item]));
+
+  for (const { selector, outbound } of mappings) {
+    const resolvedSelector = resolveTag(outboundMap, selector);
+    if (!resolvedSelector || !outboundMap.has(resolvedSelector)) {
+      continue;
+    }
+
+    const selectorOutbound = outboundMap.get(resolvedSelector);
+    if (!selectorOutbound || !['selector', 'urltest'].includes(selectorOutbound.type)) {
+      continue;
+    }
+
+    const resolvedOutbound = resolveTag(outboundMap, outbound, { allowMissing: true });
+    if (!resolvedOutbound) {
+      continue;
+    }
+
+    selectorOutbound.outbounds = Array.isArray(selectorOutbound.outbounds) ? selectorOutbound.outbounds : [];
+    selectorOutbound.outbounds = uniq([...selectorOutbound.outbounds, resolvedOutbound]);
   }
 }
 
