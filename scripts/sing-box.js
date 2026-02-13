@@ -28,6 +28,10 @@ const NOVASTAR_HOSTS = {
   'ai-portal.novastar.tech': '172.16.91.232'
 };
 
+const NOVASTAR_INTERNAL_RULE_SET_TAG = 'geosite-novastar-internal';
+const NOVASTAR_DNS_DOMAIN_SUFFIXES = Object.freeze(['novastar.tech']);
+const NOVASTAR_DIRECT_DOMAIN_SUFFIXES = Object.freeze(['novastar-led.cn', 'pingjl.com', 'pingboss.com']);
+
 const ConfigOps = {
   ensureDnsRule,
   ensureRouteRule,
@@ -35,6 +39,82 @@ const ConfigOps = {
   ensureOutbound,
   cleanupOutboundReferences
 };
+
+const PROFILE_REMOVED_OUTBOUND_TAGS = Object.freeze([
+  '⭐NovaStar',
+  '🏠回家节点',
+  '🕹️游戏节点',
+  '🦅美国原生'
+]);
+
+const PROFILE_REMOVED_RULE_SET_TAGS = Object.freeze([
+  'geosite-novastar-internal',
+  'geosite-us-native',
+  'geosite-game',
+  'geoip-bilibili',
+  'geosite-bilibili'
+]);
+
+const PROXY_GROUP_RULES = Object.freeze({
+  '🛬落地节点': p => /landing/i.test(p.tag),
+  '➡️节点选择': p => !/novastar|landing|home|chengdu|game/i.test(p.tag),
+  '🔄自动测速': p => !/novastar|landing|home|chengdu|game/i.test(p.tag),
+  '⬆️AI专用出站': p => /us4/i.test(p.tag) && /家宽/i.test(p.tag),
+  '🧧香港节点': p => /🇭🇰|HK|hk|香港|港|HongKong/i.test(p.tag) && !/landing|game/i.test(p.tag),
+  '🧋台湾节点': p => /🇹🇼|TW|tw|台湾|臺灣|台|Taiwan/i.test(p.tag) && !/landing/i.test(p.tag),
+  '🦁狮城节点': p => /🇸🇬|SG|sg|新加坡|狮|Singapore/i.test(p.tag) && !/landing/i.test(p.tag),
+  '⛩️日本节点': p => /🇯🇵|JP|jp|日本|日|Japan/i.test(p.tag) && !/landing|game/i.test(p.tag),
+  '🇰🇷 韩国节点': p => /🇰🇷|Korea|韩国|韩/i.test(p.tag) && !/landing/i.test(p.tag),
+  '🗽美国节点': p => /🇺🇸|美国|美|United States/i.test(p.tag) && !/landing/i.test(p.tag),
+  '🏠回家节点': p => /home/i.test(p.tag) && !/landing/i.test(p.tag),
+  '🕹️游戏节点': p => /game/i.test(p.tag) && !/landing/i.test(p.tag)
+});
+
+const RELAY_ALIAS_MAP = Object.freeze({
+  landing: '🛬落地节点',
+  front: '🚪前置节点',
+  pre: '🚪前置节点',
+  all: '➡️节点选择',
+  auto: '🔄自动测速',
+  hk: '🧧香港节点',
+  tw: '🧋台湾节点',
+  sg: '🦁狮城节点',
+  jp: '⛩️日本节点',
+  us: '🗽美国节点',
+  home: '🏠回家节点',
+  game: '🕹️游戏节点',
+  nova: '⭐NovaStar',
+  novastar: '⭐NovaStar',
+  ai: '⬆️AI专用出站'
+});
+
+const OUTBOUND_GROUP_TYPES = Object.freeze(['selector', 'urltest']);
+const SYSTEM_OUTBOUND_TAGS = Object.freeze(['direct', 'block']);
+const PROFILE_REMOVED_IP_CIDR = Object.freeze(['192.168.50.0/24']);
+const LEGACY_SINGBOX_PROCESS_NAMES = Object.freeze(['sing-box.exe', 'sing-box']);
+const LEGACY_SINGBOX_PORTS = Object.freeze([4430, 8443, 3478]);
+const OP_TAILSCALE_KEYWORDS = Object.freeze(['tailscale']);
+const OP_TAILSCALE_PORTS = Object.freeze([4430, 8443, 3478, 43443, 43478]);
+const BOOLEAN_TRUE_VALUES = Object.freeze(['1', 'true', 'yes', 'on']);
+const BOOLEAN_FALSE_VALUES = Object.freeze(['0', 'false', 'no', 'off']);
+
+const TAILSCALE_ENDPOINT_TEMPLATE = Object.freeze({
+  type: 'tailscale',
+  tag: 'ts-ep',
+  ephemeral: false,
+  accept_routes: true
+});
+
+const TUN_OVERRIDE_PARSERS = Object.freeze({
+  address: parseString,
+  mtu: parseNumber,
+  auto_route: parseBoolean,
+  strict_route: parseBoolean,
+  endpoint_independent_nat: parseBoolean,
+  stack: parseString,
+  domain_strategy: parseString,
+  auto_redirect: parseBoolean
+});
 
 const Runtime = {
   createContext(env) {
@@ -232,6 +312,16 @@ function resolveNovastarEnabled(args, profile) {
 }
 
 function applyNovastarFeatures(config, enabled) {
+  const context = createNovastarContext(config);
+  if (enabled) {
+    applyEnabledNovastar(context);
+  } else {
+    applyDisabledNovastar(context);
+  }
+  finalizeNovastarContext(config, context);
+}
+
+function createNovastarContext(config) {
   const dns = config.dns || {};
   dns.servers = Array.isArray(dns.servers) ? dns.servers : [];
   dns.rules = Array.isArray(dns.rules) ? dns.rules : [];
@@ -240,84 +330,93 @@ function applyNovastarFeatures(config, enabled) {
   route.rules = Array.isArray(route.rules) ? route.rules : [];
   route.rule_set = Array.isArray(route.rule_set) ? route.rule_set : [];
 
-  config.outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
+  const outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
 
-  if (enabled) {
-    upsertHostsServer(dns, NOVASTAR_HOSTS);
-    ConfigOps.ensureDnsRule(dns.rules, {
-      rule_set: 'geosite-novastar-internal',
-      action: 'route',
-      server: 'hosts'
-    }, 1);
-    ConfigOps.ensureDnsRule(dns.rules, {
-      domain_suffix: ['novastar.tech'],
-      action: 'route',
-      server: 'proxyDns'
-    }, 2);
+  return { dns, route, outbounds };
+}
 
-    ConfigOps.ensureOutbound(
-      config.outbounds,
-      {
-        tag: '⭐NovaStar',
-        type: 'selector',
-        outbounds: ['direct']
-      },
-      {
-        beforeTags: ['🦅美国原生', '🏠回家节点']
-      }
-    );
+function applyEnabledNovastar(context) {
+  const { dns, route, outbounds } = context;
+  upsertHostsServer(dns, NOVASTAR_HOSTS);
+  ConfigOps.ensureDnsRule(dns.rules, {
+    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
+    action: 'route',
+    server: 'hosts'
+  }, 1);
+  ConfigOps.ensureDnsRule(dns.rules, {
+    domain_suffix: [...NOVASTAR_DNS_DOMAIN_SUFFIXES],
+    action: 'route',
+    server: 'proxyDns'
+  }, 2);
 
-    ConfigOps.ensureRouteRule(route.rules, {
-      domain_suffix: ['novastar-led.cn', 'pingjl.com', 'pingboss.com'],
-      outbound: 'direct'
-    }, 5);
-    ConfigOps.ensureRouteRule(route.rules, {
-      rule_set: 'geosite-novastar-internal',
-      outbound: '⭐NovaStar'
-    }, 10);
+  ConfigOps.ensureOutbound(
+    outbounds,
+    {
+      tag: '⭐NovaStar',
+      type: 'selector',
+      outbounds: ['direct']
+    },
+    {
+      beforeTags: ['🦅美国原生', '🏠回家节点']
+    }
+  );
 
-    ConfigOps.ensureRuleSet(route.rule_set, {
-      tag: 'geosite-novastar-internal',
-      type: 'remote',
-      format: 'source',
-      url: 'https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json',
-      download_detour: '⬆️出站节点'
-    });
-  } else {
-    dns.servers = dns.servers.filter(server => server?.tag !== 'hosts');
-    dns.rules = dns.rules.filter(rule => {
-      if (rule?.server === 'hosts') {
-        return false;
-      }
-      if (rule?.rule_set === 'geosite-novastar-internal') {
-        return false;
-      }
-      if (containsAny(rule?.domain_suffix, ['novastar.tech'])) {
-        return false;
-      }
-      return true;
-    });
+  ConfigOps.ensureRouteRule(route.rules, {
+    domain_suffix: [...NOVASTAR_DIRECT_DOMAIN_SUFFIXES],
+    outbound: 'direct'
+  }, 5);
+  ConfigOps.ensureRouteRule(route.rules, {
+    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
+    outbound: '⭐NovaStar'
+  }, 10);
 
-    config.outbounds = config.outbounds.filter(outbound => outbound?.tag !== '⭐NovaStar');
+  ConfigOps.ensureRuleSet(route.rule_set, {
+    tag: NOVASTAR_INTERNAL_RULE_SET_TAG,
+    type: 'remote',
+    format: 'source',
+    url: 'https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json',
+    download_detour: '⬆️出站节点'
+  });
+}
 
-    route.rules = route.rules.filter(rule => {
-      if (rule?.rule_set === 'geosite-novastar-internal') {
-        return false;
-      }
-      if (rule?.outbound === '⭐NovaStar') {
-        return false;
-      }
-      if (containsAny(rule?.domain_suffix, ['novastar-led.cn', 'pingjl.com', 'pingboss.com'])) {
-        return false;
-      }
-      return true;
-    });
+function applyDisabledNovastar(context) {
+  const { dns, route } = context;
+  dns.servers = dns.servers.filter(server => server?.tag !== 'hosts');
+  dns.rules = dns.rules.filter(rule => {
+    if (rule?.server === 'hosts') {
+      return false;
+    }
+    if (rule?.rule_set === NOVASTAR_INTERNAL_RULE_SET_TAG) {
+      return false;
+    }
+    if (containsAny(rule?.domain_suffix, NOVASTAR_DNS_DOMAIN_SUFFIXES)) {
+      return false;
+    }
+    return true;
+  });
 
-    route.rule_set = route.rule_set.filter(item => item?.tag !== 'geosite-novastar-internal');
-  }
+  context.outbounds = context.outbounds.filter(outbound => outbound?.tag !== '⭐NovaStar');
 
-  config.dns = dns;
-  config.route = route;
+  route.rules = route.rules.filter(rule => {
+    if (rule?.rule_set === NOVASTAR_INTERNAL_RULE_SET_TAG) {
+      return false;
+    }
+    if (rule?.outbound === '⭐NovaStar') {
+      return false;
+    }
+    if (containsAny(rule?.domain_suffix, NOVASTAR_DIRECT_DOMAIN_SUFFIXES)) {
+      return false;
+    }
+    return true;
+  });
+
+  route.rule_set = route.rule_set.filter(item => item?.tag !== NOVASTAR_INTERNAL_RULE_SET_TAG);
+}
+
+function finalizeNovastarContext(config, context) {
+  config.dns = context.dns;
+  config.route = context.route;
+  config.outbounds = context.outbounds;
   ConfigOps.cleanupOutboundReferences(config.outbounds);
 }
 
@@ -373,10 +472,10 @@ function ensureOutbound(outbounds, expectedOutbound, options = {}) {
     }
   }
 
-  if (['selector', 'urltest'].includes(normalizedOutbound.type)) {
+  if (OUTBOUND_GROUP_TYPES.includes(normalizedOutbound.type)) {
     let insertIndex = -1;
     for (let i = 0; i < outbounds.length; i += 1) {
-      if (['selector', 'urltest'].includes(outbounds[i]?.type)) {
+      if (OUTBOUND_GROUP_TYPES.includes(outbounds[i]?.type)) {
         insertIndex = i + 1;
       }
     }
@@ -431,18 +530,13 @@ function applyTailscaleEndpoint(config, tailscaleOption) {
 
   config.endpoints = Array.isArray(config.endpoints) ? config.endpoints : [];
 
-  const endpoint = {
-    type: 'tailscale',
-    tag: 'ts-ep',
-    ephemeral: false,
-    accept_routes: true
-  };
+  const endpoint = { ...TAILSCALE_ENDPOINT_TEMPLATE };
 
   if (tailscaleOption.hostname) {
     endpoint.hostname = tailscaleOption.hostname;
   }
 
-  const existedIndex = config.endpoints.findIndex(item => item?.tag === 'ts-ep');
+  const existedIndex = config.endpoints.findIndex(item => item?.tag === TAILSCALE_ENDPOINT_TEMPLATE.tag);
   if (existedIndex >= 0) {
     config.endpoints[existedIndex] = endpoint;
   } else {
@@ -456,18 +550,7 @@ function applyTunOverrides(config, args) {
     return;
   }
 
-  const tunOverrideParsers = {
-    address: parseString,
-    mtu: parseNumber,
-    auto_route: parseBoolean,
-    strict_route: parseBoolean,
-    endpoint_independent_nat: parseBoolean,
-    stack: parseString,
-    domain_strategy: parseString,
-    auto_redirect: parseBoolean
-  };
-
-  for (const [key, parser] of Object.entries(tunOverrideParsers)) {
+  for (const [key, parser] of Object.entries(TUN_OVERRIDE_PARSERS)) {
     if (!hasOwn(args, key)) {
       continue;
     }
@@ -482,29 +565,10 @@ function applyTunOverrides(config, args) {
 }
 
 function parseSelectorOutboundMap(rawMap) {
-  if (!rawMap || typeof rawMap !== 'string') {
-    return [];
-  }
-
-  return rawMap
-    .split(',')
-    .map(item => item.trim())
-    .filter(Boolean)
-    .map(item => {
-      const index = item.indexOf(':');
-      if (index <= 0 || index >= item.length - 1) {
-        return null;
-      }
-
-      const selector = item.slice(0, index).trim();
-      const outbound = item.slice(index + 1).trim();
-      if (!selector || !outbound) {
-        return null;
-      }
-
-      return { selector, outbound };
-    })
-    .filter(Boolean);
+  return parseColonMappings(rawMap, (left, right) => ({
+    selector: left,
+    outbound: right
+  }));
 }
 
 function applySelectorOutboundAppend(config, mappings) {
@@ -512,54 +576,79 @@ function applySelectorOutboundAppend(config, mappings) {
     return;
   }
 
-  const outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
-  const outboundMap = new Map(outbounds.map(item => [item.tag, item]));
+  const context = createSelectorOutboundContext(config);
 
-  for (const { selector, outbound } of mappings) {
-    const resolvedSelector = resolveTag(outboundMap, selector);
-    if (!resolvedSelector || !outboundMap.has(resolvedSelector)) {
-      continue;
-    }
-
-    const selectorOutbound = outboundMap.get(resolvedSelector);
-    if (!selectorOutbound || !['selector', 'urltest'].includes(selectorOutbound.type)) {
-      continue;
-    }
-
-    const resolvedOutbound = resolveTag(outboundMap, outbound, { allowMissing: true });
-    if (!resolvedOutbound) {
-      continue;
-    }
-
-    selectorOutbound.outbounds = Array.isArray(selectorOutbound.outbounds) ? selectorOutbound.outbounds : [];
-    selectorOutbound.outbounds = uniq([...selectorOutbound.outbounds, resolvedOutbound]);
+  for (const mapping of mappings) {
+    applySelectorOutboundMapping(context, mapping);
   }
 }
 
+function createSelectorOutboundContext(config) {
+  return {
+    outboundMap: createOutboundMap(config)
+  };
+}
+
+function applySelectorOutboundMapping(context, mapping) {
+  const { selector, outbound } = mapping;
+  const { outboundMap } = context;
+
+  const resolvedSelector = resolveTag(outboundMap, selector);
+  if (!resolvedSelector || !outboundMap.has(resolvedSelector)) {
+    return;
+  }
+
+  const selectorOutbound = outboundMap.get(resolvedSelector);
+  if (!selectorOutbound || !OUTBOUND_GROUP_TYPES.includes(selectorOutbound.type)) {
+    return;
+  }
+
+  const resolvedOutbound = resolveTag(outboundMap, outbound, { allowMissing: true });
+  if (!resolvedOutbound) {
+    return;
+  }
+
+  appendSelectorOutbound(selectorOutbound, resolvedOutbound);
+}
+
+function appendSelectorOutbound(selectorOutbound, resolvedOutbound) {
+  selectorOutbound.outbounds = Array.isArray(selectorOutbound.outbounds) ? selectorOutbound.outbounds : [];
+  selectorOutbound.outbounds = uniq([...selectorOutbound.outbounds, resolvedOutbound]);
+}
+
 function parseRelayMap(rawRelayMap) {
-  if (!rawRelayMap || typeof rawRelayMap !== 'string') {
+  return parseColonMappings(rawRelayMap, (left, right) => ({
+    from: left,
+    to: right
+  }));
+}
+
+function parseColonMappings(rawValue, buildPair) {
+  if (!rawValue || typeof rawValue !== 'string') {
     return [];
   }
 
-  return rawRelayMap
+  return rawValue
     .split(',')
     .map(item => item.trim())
     .filter(Boolean)
-    .map(item => {
-      const index = item.indexOf(':');
-      if (index <= 0 || index >= item.length - 1) {
-        return null;
-      }
-
-      const from = item.slice(0, index).trim();
-      const to = item.slice(index + 1).trim();
-      if (!from || !to) {
-        return null;
-      }
-
-      return { from, to };
-    })
+    .map(item => parseColonMappingItem(item, buildPair))
     .filter(Boolean);
+}
+
+function parseColonMappingItem(item, buildPair) {
+  const index = item.indexOf(':');
+  if (index <= 0 || index >= item.length - 1) {
+    return null;
+  }
+
+  const left = item.slice(0, index).trim();
+  const right = item.slice(index + 1).trim();
+  if (!left || !right) {
+    return null;
+  }
+
+  return buildPair(left, right);
 }
 
 function normalizeRelayTag(rawTag) {
@@ -567,26 +656,8 @@ function normalizeRelayTag(rawTag) {
     return rawTag;
   }
 
-  const aliasMap = {
-    landing: '🛬落地节点',
-    front: '🚪前置节点',
-    pre: '🚪前置节点',
-    all: '➡️节点选择',
-    auto: '🔄自动测速',
-    hk: '🧧香港节点',
-    tw: '🧋台湾节点',
-    sg: '🦁狮城节点',
-    jp: '⛩️日本节点',
-    us: '🗽美国节点',
-    home: '🏠回家节点',
-    game: '🕹️游戏节点',
-    nova: '⭐NovaStar',
-    novastar: '⭐NovaStar',
-    ai: '⬆️AI专用出站'
-  };
-
   const key = String(rawTag).toLowerCase();
-  return aliasMap[key] || rawTag;
+  return RELAY_ALIAS_MAP[key] || rawTag;
 }
 
 function resolveTag(outboundMap, rawTag, options = {}) {
@@ -611,103 +682,135 @@ function applyRelayMap(config, mappings) {
     return;
   }
 
-  const outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
-  const outboundMap = new Map(outbounds.map(item => [item.tag, item]));
+  const context = createRelayContext(config);
 
-  for (const { from, to } of mappings) {
-    const resolvedFrom = resolveTag(outboundMap, from);
-    const resolvedTo = resolveTag(outboundMap, to, { allowMissing: true });
-    if (!resolvedFrom || !resolvedTo || !outboundMap.has(resolvedFrom)) {
-      continue;
-    }
-
-    const targetTags = collectRelayTargetTags(resolvedFrom, outboundMap);
-
-    for (const tag of targetTags) {
-      const target = outboundMap.get(tag);
-      if (!target) {
-        continue;
-      }
-
-      if (['direct', 'block', resolvedTo].includes(tag)) {
-        continue;
-      }
-
-      if (['selector', 'urltest'].includes(target.type)) {
-        continue;
-      }
-
-      target.detour = resolvedTo;
-    }
+  for (const mapping of mappings) {
+    applyRelayMapping(context, mapping);
   }
+}
+
+function createRelayContext(config) {
+  return {
+    outboundMap: createOutboundMap(config)
+  };
+}
+
+function applyRelayMapping(context, mapping) {
+  const { from, to } = mapping;
+  const { outboundMap } = context;
+  const resolvedFrom = resolveTag(outboundMap, from);
+  const resolvedTo = resolveTag(outboundMap, to, { allowMissing: true });
+  if (!resolvedFrom || !resolvedTo || !outboundMap.has(resolvedFrom)) {
+    return;
+  }
+
+  const targetTags = collectRelayTargetTags(resolvedFrom, outboundMap);
+  for (const tag of targetTags) {
+    applyRelayDetourToTarget(outboundMap, tag, resolvedTo);
+  }
+}
+
+function applyRelayDetourToTarget(outboundMap, tag, resolvedTo) {
+  const target = outboundMap.get(tag);
+  if (!target) {
+    return;
+  }
+
+  if ([...SYSTEM_OUTBOUND_TAGS, resolvedTo].includes(tag)) {
+    return;
+  }
+
+  if (OUTBOUND_GROUP_TYPES.includes(target.type)) {
+    return;
+  }
+
+  target.detour = resolvedTo;
+}
+
+function createOutboundMap(config) {
+  const outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
+  return new Map(outbounds.map(item => [item.tag, item]));
 }
 
 function collectRelayTargetTags(fromTag, outboundMap) {
-  const result = new Set();
-  const visited = new Set();
-  const queue = [fromTag];
+  const state = createRelayTraversalState(fromTag);
+  traverseRelayTargets(state, outboundMap);
+  return state.result;
+}
 
-  while (queue.length > 0) {
-    const currentTag = queue.shift();
-    if (!currentTag || visited.has(currentTag)) {
-      continue;
-    }
-    visited.add(currentTag);
+function createRelayTraversalState(fromTag) {
+  return {
+    result: new Set(),
+    visited: new Set(),
+    queue: [fromTag]
+  };
+}
 
-    const current = outboundMap.get(currentTag);
-    if (!current) {
-      continue;
-    }
+function traverseRelayTargets(state, outboundMap) {
+  while (state.queue.length > 0) {
+    const currentTag = state.queue.shift();
+    visitRelayTag(currentTag, state, outboundMap);
+  }
+}
 
-    const isGroup = ['selector', 'urltest'].includes(current.type);
-    if (isGroup && Array.isArray(current.outbounds) && current.outbounds.length > 0) {
-      for (const childTag of current.outbounds) {
-        if (!visited.has(childTag)) {
-          queue.push(childTag);
-        }
-      }
-      continue;
-    }
+function visitRelayTag(currentTag, state, outboundMap) {
+  if (!currentTag || state.visited.has(currentTag)) {
+    return;
+  }
+  state.visited.add(currentTag);
 
-    result.add(currentTag);
+  const current = outboundMap.get(currentTag);
+  if (!current) {
+    return;
   }
 
-  return result;
+  if (isRelayGroupOutbound(current)) {
+    enqueueRelayChildren(current, state);
+    return;
+  }
+
+  state.result.add(currentTag);
+}
+
+function isRelayGroupOutbound(outbound) {
+  return OUTBOUND_GROUP_TYPES.includes(outbound?.type)
+    && Array.isArray(outbound?.outbounds)
+    && outbound.outbounds.length > 0;
+}
+
+function enqueueRelayChildren(outbound, state) {
+  for (const childTag of outbound.outbounds) {
+    if (!state.visited.has(childTag)) {
+      state.queue.push(childTag);
+    }
+  }
 }
 
 function injectProxiesByGroupRules(config, proxies) {
-  const groupRules = {
-    '🛬落地节点': p => /landing/i.test(p.tag),
-    '➡️节点选择': p => !/novastar|landing|home|chengdu|game/i.test(p.tag),
-    '🔄自动测速': p => !/novastar|landing|home|chengdu|game/i.test(p.tag),
-    '⬆️AI专用出站': p => /us4/i.test(p.tag) && /家宽/i.test(p.tag),
-    '🧧香港节点': p => /🇭🇰|HK|hk|香港|港|HongKong/i.test(p.tag) && !/landing|game/i.test(p.tag),
-    '🧋台湾节点': p => /🇹🇼|TW|tw|台湾|臺灣|台|Taiwan/i.test(p.tag) && !/landing/i.test(p.tag),
-    '🦁狮城节点': p => /🇸🇬|SG|sg|新加坡|狮|Singapore/i.test(p.tag) && !/landing/i.test(p.tag),
-    '⛩️日本节点': p => /🇯🇵|JP|jp|日本|日|Japan/i.test(p.tag) && !/landing|game/i.test(p.tag),
-    '🇰🇷 韩国节点': p => /🇰🇷|Korea|韩国|韩/i.test(p.tag) && !/landing/i.test(p.tag),
-    '🗽美国节点': p => /🇺🇸|美国|美|United States/i.test(p.tag) && !/landing/i.test(p.tag),
-    '🏠回家节点': p => /home/i.test(p.tag) && !/landing/i.test(p.tag),
-    '🕹️游戏节点': p => /game/i.test(p.tag) && !/landing/i.test(p.tag)
-  };
+  const outboundsMap = createOutboundMap(config);
 
-  const outboundsMap = new Map((config.outbounds || []).map(outbound => [outbound.tag, outbound]));
-
-  for (const [tag, filterFn] of Object.entries(groupRules)) {
-    const outbound = outboundsMap.get(tag);
-    if (!outbound) {
-      continue;
-    }
-
-    const availableProxies = applyFilter(proxies, outbound.filter);
-    const filteredProxyTags = availableProxies.filter(filterFn).map(proxy => proxy.tag);
-
-    if (!Array.isArray(outbound.outbounds)) {
-      outbound.outbounds = [];
-    }
-
-    outbound.outbounds = uniq([...outbound.outbounds, ...filteredProxyTags]);
+  for (const [tag, filterFn] of Object.entries(PROXY_GROUP_RULES)) {
+    injectGroupProxies(outboundsMap, tag, filterFn, proxies);
   }
+}
+
+function injectGroupProxies(outboundsMap, groupTag, groupFilterFn, proxies) {
+  const outbound = outboundsMap.get(groupTag);
+  if (!outbound) {
+    return;
+  }
+
+  const filteredProxyTags = collectGroupProxyTags(proxies, outbound.filter, groupFilterFn);
+  if (!Array.isArray(outbound.outbounds)) {
+    outbound.outbounds = [];
+  }
+
+  outbound.outbounds = uniq([...outbound.outbounds, ...filteredProxyTags]);
+}
+
+function collectGroupProxyTags(proxies, filters, groupFilterFn) {
+  const availableProxies = applyFilter(proxies, filters);
+  return availableProxies.filter(groupFilterFn).map(proxy => proxy.tag);
 }
 
 function applyFilter(proxies, filters) {
@@ -732,20 +835,8 @@ function applyProfile(config, profile) {
     return;
   }
 
-  const removedOutboundTags = new Set([
-    '⭐NovaStar',
-    '🏠回家节点',
-    '🕹️游戏节点',
-    '🦅美国原生'
-  ]);
-
-  const removedRuleSetTags = new Set([
-    'geosite-novastar-internal',
-    'geosite-us-native',
-    'geosite-game',
-    'geoip-bilibili',
-    'geosite-bilibili'
-  ]);
+  const removedOutboundTags = new Set(PROFILE_REMOVED_OUTBOUND_TAGS);
+  const removedRuleSetTags = new Set(PROFILE_REMOVED_RULE_SET_TAGS);
 
   if (config.experimental?.clash_api) {
     config.experimental.clash_api.external_ui_download_detour = '➡️节点选择';
@@ -753,7 +844,29 @@ function applyProfile(config, profile) {
 
   const dns = config.dns || {};
   dns.servers = (dns.servers || []).filter(server => server?.tag !== 'hosts');
-  dns.rules = [
+  dns.rules = buildProfileDnsRules();
+  dns.strategy = 'ipv4_only';
+  config.dns = dns;
+
+  config.outbounds = (config.outbounds || []).filter(outbound => !removedOutboundTags.has(outbound?.tag));
+
+  const route = config.route || {};
+  route.rules = buildProfileRouteRules(route.rules || [], removedOutboundTags, removedRuleSetTags);
+
+  if (profile === 'op') {
+    ensureOpRules(route.rules);
+  } else {
+    route.rules = route.rules.filter(rule => !isOpExtraRule(rule));
+  }
+
+  route.rule_set = (route.rule_set || []).filter(item => !removedRuleSetTags.has(item?.tag));
+  config.route = route;
+
+  ConfigOps.cleanupOutboundReferences(config.outbounds);
+}
+
+function buildProfileDnsRules() {
+  return [
     {
       rule_set: 'geosite-category-ads-all',
       action: 'predefined',
@@ -786,35 +899,23 @@ function applyProfile(config, profile) {
       server: 'proxyDns'
     }
   ];
-  dns.strategy = 'ipv4_only';
-  config.dns = dns;
+}
 
-  config.outbounds = (config.outbounds || []).filter(outbound => !removedOutboundTags.has(outbound?.tag));
-
-  const route = config.route || {};
-  route.rules = (route.rules || [])
+function buildProfileRouteRules(routeRules, removedOutboundTags, removedRuleSetTags) {
+  return routeRules
     .map(rule => normalizeRuleSet(rule, removedRuleSetTags))
     .filter(rule => !shouldRemoveRouteRule(rule, removedOutboundTags, removedRuleSetTags))
-    .map(rule => {
-      if (rule?.clash_mode === 'global') {
-        return {
-          ...rule,
-          outbound: '➡️节点选择'
-        };
-      }
-      return rule;
-    });
+    .map(mapGlobalModeRuleToNodeSelector);
+}
 
-  if (profile === 'op') {
-    ensureOpRules(route.rules);
-  } else {
-    route.rules = route.rules.filter(rule => !isOpExtraRule(rule));
+function mapGlobalModeRuleToNodeSelector(rule) {
+  if (rule?.clash_mode === 'global') {
+    return {
+      ...rule,
+      outbound: '➡️节点选择'
+    };
   }
-
-  route.rule_set = (route.rule_set || []).filter(item => !removedRuleSetTags.has(item?.tag));
-  config.route = route;
-
-  ConfigOps.cleanupOutboundReferences(config.outbounds);
+  return rule;
 }
 
 function normalizeRuleSet(rule, removedRuleSetTags) {
@@ -853,11 +954,11 @@ function shouldRemoveRouteRule(rule, removedOutboundTags, removedRuleSetTags) {
     return true;
   }
 
-  if (containsAny(rule.domain_suffix, ['novastar-led.cn', 'pingjl.com', 'pingboss.com'])) {
+  if (containsAny(rule.domain_suffix, NOVASTAR_DIRECT_DOMAIN_SUFFIXES)) {
     return true;
   }
 
-  if (containsAny(rule.ip_cidr, ['192.168.50.0/24'])) {
+  if (containsAny(rule.ip_cidr, PROFILE_REMOVED_IP_CIDR)) {
     return true;
   }
 
@@ -869,22 +970,22 @@ function isLegacySingBoxPortRule(rule) {
     return false;
   }
 
-  const hasProcess = rule.rules.some(item => containsAny(item?.process_name, ['sing-box.exe', 'sing-box']));
-  const hasPort = rule.rules.some(item => containsAny(item?.port, [4430, 8443, 3478]));
+  const hasProcess = rule.rules.some(item => containsAny(item?.process_name, LEGACY_SINGBOX_PROCESS_NAMES));
+  const hasPort = rule.rules.some(item => containsAny(item?.port, LEGACY_SINGBOX_PORTS));
   return hasProcess && hasPort;
 }
 
 function ensureOpRules(rules) {
   if (!rules.some(rule => isTailscaleRule(rule))) {
     rules.splice(4, 0, {
-      domain_keyword: ['tailscale'],
+      domain_keyword: [...OP_TAILSCALE_KEYWORDS],
       outbound: '自定义直连'
     });
   }
 
   if (!rules.some(rule => isTailscalePortRule(rule))) {
     rules.splice(5, 0, {
-      port: [4430, 8443, 3478, 43443, 43478],
+      port: [...OP_TAILSCALE_PORTS],
       outbound: '自定义直连'
     });
   }
@@ -895,15 +996,14 @@ function isOpExtraRule(rule) {
 }
 
 function isTailscaleRule(rule) {
-  return rule?.outbound === '自定义直连' && containsAny(rule.domain_keyword, ['tailscale']);
+  return rule?.outbound === '自定义直连' && containsAny(rule.domain_keyword, OP_TAILSCALE_KEYWORDS);
 }
 
 function isTailscalePortRule(rule) {
   if (rule?.outbound !== '自定义直连') {
     return false;
   }
-  const required = [4430, 8443, 3478, 43443, 43478];
-  return required.every(port => Array.isArray(rule.port) && rule.port.includes(port));
+  return OP_TAILSCALE_PORTS.every(port => Array.isArray(rule.port) && rule.port.includes(port));
 }
 
 function cleanupOutboundReferences(outbounds) {
@@ -915,7 +1015,7 @@ function cleanupOutboundReferences(outbounds) {
     }
 
     outbound.outbounds = uniq(
-      outbound.outbounds.filter(tag => validTags.has(tag) || ['direct', 'block'].includes(tag))
+      outbound.outbounds.filter(tag => validTags.has(tag) || SYSTEM_OUTBOUND_TAGS.includes(tag))
     );
   }
 }
@@ -957,10 +1057,10 @@ function parseBoolean(value) {
   }
 
   const raw = String(value || '').trim().toLowerCase();
-  if (['1', 'true', 'yes', 'on'].includes(raw)) {
+  if (BOOLEAN_TRUE_VALUES.includes(raw)) {
     return true;
   }
-  if (['0', 'false', 'no', 'off'].includes(raw)) {
+  if (BOOLEAN_FALSE_VALUES.includes(raw)) {
     return false;
   }
   return undefined;
