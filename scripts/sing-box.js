@@ -1,38 +1,168 @@
-const args = $arguments || {};
-const profile = normalizeProfile(args.profile || args.mode);
+async function main(env) {
+  const ctx = Runtime.createContext(env);
+  await ProxySource.load(ctx);
+  Pipeline.run(ctx);
+  $content = Runtime.serialize(ctx.config);
+}
 
-let config = JSON.parse($files[0]);
+const ArgParsers = {
+  normalizeProfile,
+  parseString,
+  parseList,
+  parseBoolean,
+  parseNumber
+};
 
-const collectionName = parseString(args.collection);
-const subscriptionNames = parseList(args.subscription);
+const NOVASTAR_HOSTS = {
+  'oa.novastar.tech': '172.16.81.12',
+  'ehr.novastar.tech': '172.16.80.109',
+  'ai.novaops.tech': '172.16.80.99',
+  'pwd.novastar.tech': '172.16.81.66',
+  'iam-idp.novastar.tech': '172.16.91.27',
+  'iam.novastar.tech': '172.16.91.27',
+  'wiki.novastar.tech': '172.16.81.222',
+  'novaehr.novastar.tech': '172.16.91.76',
+  'alm.novatools.vip': '172.16.81.11',
+  'ai-meeting.novastar.tech': '172.16.91.232',
+  'e-bridge.novastar.tech': '172.16.91.42',
+  'ai-portal.novastar.tech': '172.16.91.232'
+};
 
-assertProxySources(collectionName, subscriptionNames);
+const ConfigOps = {
+  ensureDnsRule,
+  ensureRouteRule,
+  ensureRuleSet,
+  ensureOutbound,
+  cleanupOutboundReferences
+};
 
-let proxies = await buildProxies({
-  collectionName,
-  subscriptionNames
+const Runtime = {
+  createContext(env) {
+    const args = env?.arguments || {};
+    const profile = ArgParsers.normalizeProfile(args.profile || args.mode);
+
+    const files = Array.isArray(env?.files) ? env.files : [];
+    if (files.length === 0) {
+      throw new Error('配置非法：缺少模板文件输入');
+    }
+
+    const config = JSON.parse(files[0]);
+    const collectionName = ArgParsers.parseString(args.collection);
+    const subscriptionNames = ArgParsers.parseList(args.subscription);
+    const producer = typeof env?.producer === 'function' ? env.producer : produceArtifact;
+
+    assertProxySources(collectionName, subscriptionNames);
+
+    return {
+      args,
+      profile,
+      config,
+      collectionName,
+      subscriptionNames,
+      producer,
+      proxies: []
+    };
+  },
+  serialize(config) {
+    return JSON.stringify(config, null, 2);
+  }
+};
+
+const ProxySource = {
+  async load(ctx) {
+    ctx.proxies = await buildProxies({
+      collectionName: ctx.collectionName,
+      subscriptionNames: ctx.subscriptionNames,
+      producer: ctx.producer
+    });
+
+    ctx.config.outbounds = Array.isArray(ctx.config.outbounds) ? ctx.config.outbounds : [];
+    ctx.config.outbounds.push(...ctx.proxies);
+  }
+};
+
+const FeatureFacade = {
+  proxyGroup: {
+    run(ctx) {
+      injectProxiesByGroupRules(ctx.config, ctx.proxies);
+    }
+  },
+  profile: {
+    run(ctx) {
+      applyProfile(ctx.config, ctx.profile);
+    }
+  },
+  novastar: {
+    resolveEnabled(args, profile) {
+      return resolveNovastarEnabled(args, profile);
+    },
+    run(ctx) {
+      const enabled = this.resolveEnabled(ctx.args, ctx.profile);
+      applyNovastarFeatures(ctx.config, enabled);
+    }
+  },
+  tailscale: {
+    parse(args) {
+      return parseTailscaleOption(args.tailscale);
+    },
+    run(ctx) {
+      applyTailscaleEndpoint(ctx.config, this.parse(ctx.args));
+    }
+  },
+  tun: {
+    run(ctx) {
+      applyTunOverrides(ctx.config, ctx.args);
+    }
+  },
+  selectorOutbound: {
+    parse(args) {
+      return parseSelectorOutboundMap(args.selector_outbound || args.selector_append);
+    },
+    run(ctx) {
+      applySelectorOutboundAppend(ctx.config, this.parse(ctx.args));
+    }
+  },
+  relay: {
+    parse(args) {
+      return parseRelayMap(args.relay_map);
+    },
+    run(ctx) {
+      applyRelayMap(ctx.config, this.parse(ctx.args));
+    }
+  }
+};
+
+const PIPELINE_STEPS = [
+  FeatureFacade.proxyGroup,
+  FeatureFacade.profile,
+  FeatureFacade.novastar,
+  FeatureFacade.tailscale,
+  FeatureFacade.tun,
+  FeatureFacade.selectorOutbound,
+  FeatureFacade.relay
+];
+
+const Pipeline = {
+  run(ctx) {
+    for (const step of PIPELINE_STEPS) {
+      step.run(ctx);
+    }
+  }
+};
+
+await main({
+  arguments: $arguments,
+  files: $files,
+  producer: produceArtifact
 });
-
-config.outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
-config.outbounds.push(...proxies);
-
-injectProxiesByGroupRules(config, proxies);
-applyProfile(config, profile);
-applyNovastarFeatures(config, resolveNovastarEnabled(args, profile));
-applyTailscaleEndpoint(config, parseTailscaleOption(args.tailscale));
-applyTunOverrides(config, args);
-applySelectorOutboundAppend(config, parseSelectorOutboundMap(args.selector_outbound || args.selector_append));
-applyRelayMap(config, parseRelayMap(args.relay_map));
-
-$content = JSON.stringify(config, null, 2);
 
 function normalizeProfile(rawProfile) {
   if (rawProfile === undefined || rawProfile === null || String(rawProfile).trim() === '') {
-    throw new Error('配置非法：必须通过参数提供 profile（company/home/op）');
+    throw new Error('配置非法：必须通过参数提供 profile（company/home/op，op=openwrt）');
   }
 
   const value = String(rawProfile).toLowerCase();
-  if (['op', 'office', 'work'].includes(value)) {
+  if (['op', 'openwrt'].includes(value)) {
     return 'op';
   }
   if (['home', 'house'].includes(value)) {
@@ -42,7 +172,7 @@ function normalizeProfile(rawProfile) {
     return 'company';
   }
 
-  throw new Error(`配置非法：不支持的 profile=${rawProfile}，可选 company/home/op`);
+  throw new Error(`配置非法：不支持的 profile=${rawProfile}，可选 company/home/op（op=openwrt）`);
 }
 
 function assertProxySources(collectionName, subscriptionNames) {
@@ -53,12 +183,13 @@ function assertProxySources(collectionName, subscriptionNames) {
   throw new Error('配置非法：必须通过参数提供 collection 或 subscription');
 }
 
-async function buildProxies({ collectionName, subscriptionNames }) {
+async function buildProxies({ collectionName, subscriptionNames, producer }) {
+  const artifactProducer = typeof producer === 'function' ? producer : produceArtifact;
   const tasks = [];
 
   if (collectionName) {
     tasks.push(
-      produceArtifact({
+      artifactProducer({
         type: 'collection',
         name: collectionName,
         platform: 'sing-box',
@@ -69,7 +200,7 @@ async function buildProxies({ collectionName, subscriptionNames }) {
 
   for (const name of subscriptionNames) {
     tasks.push(
-      produceArtifact({
+      artifactProducer({
         type: 'subscription',
         name,
         platform: 'sing-box',
@@ -101,21 +232,6 @@ function resolveNovastarEnabled(args, profile) {
 }
 
 function applyNovastarFeatures(config, enabled) {
-  const novastarHosts = {
-    'oa.novastar.tech': '172.16.81.12',
-    'ehr.novastar.tech': '172.16.80.109',
-    'ai.novaops.tech': '172.16.80.99',
-    'pwd.novastar.tech': '172.16.81.66',
-    'iam-idp.novastar.tech': '172.16.91.27',
-    'iam.novastar.tech': '172.16.91.27',
-    'wiki.novastar.tech': '172.16.81.222',
-    'novaehr.novastar.tech': '172.16.91.76',
-    'alm.novatools.vip': '172.16.81.11',
-    'ai-meeting.novastar.tech': '172.16.91.232',
-    'e-bridge.novastar.tech': '172.16.91.42',
-    'ai-portal.novastar.tech': '172.16.91.232'
-  };
-
   const dns = config.dns || {};
   dns.servers = Array.isArray(dns.servers) ? dns.servers : [];
   dns.rules = Array.isArray(dns.rules) ? dns.rules : [];
@@ -127,34 +243,40 @@ function applyNovastarFeatures(config, enabled) {
   config.outbounds = Array.isArray(config.outbounds) ? config.outbounds : [];
 
   if (enabled) {
-    upsertHostsServer(dns, novastarHosts);
-    ensureDnsRule(dns.rules, {
+    upsertHostsServer(dns, NOVASTAR_HOSTS);
+    ConfigOps.ensureDnsRule(dns.rules, {
       rule_set: 'geosite-novastar-internal',
       action: 'route',
       server: 'hosts'
     }, 1);
-    ensureDnsRule(dns.rules, {
+    ConfigOps.ensureDnsRule(dns.rules, {
       domain_suffix: ['novastar.tech'],
       action: 'route',
       server: 'proxyDns'
     }, 2);
 
-    ensureOutbound(config.outbounds, {
-      tag: '⭐NovaStar',
-      type: 'selector',
-      outbounds: ['direct']
-    });
+    ConfigOps.ensureOutbound(
+      config.outbounds,
+      {
+        tag: '⭐NovaStar',
+        type: 'selector',
+        outbounds: ['direct']
+      },
+      {
+        beforeTags: ['🦅美国原生', '🏠回家节点']
+      }
+    );
 
-    ensureRouteRule(route.rules, {
+    ConfigOps.ensureRouteRule(route.rules, {
       domain_suffix: ['novastar-led.cn', 'pingjl.com', 'pingboss.com'],
       outbound: 'direct'
     }, 5);
-    ensureRouteRule(route.rules, {
+    ConfigOps.ensureRouteRule(route.rules, {
       rule_set: 'geosite-novastar-internal',
       outbound: '⭐NovaStar'
     }, 10);
 
-    ensureRuleSet(route.rule_set, {
+    ConfigOps.ensureRuleSet(route.rule_set, {
       tag: 'geosite-novastar-internal',
       type: 'remote',
       format: 'source',
@@ -196,7 +318,7 @@ function applyNovastarFeatures(config, enabled) {
 
   config.dns = dns;
   config.route = route;
-  cleanupOutboundReferences(config.outbounds);
+  ConfigOps.cleanupOutboundReferences(config.outbounds);
 }
 
 function upsertHostsServer(dns, predefined) {
@@ -236,11 +358,36 @@ function ensureRuleSet(ruleSets, expectedRuleSet) {
   ruleSets.push(expectedRuleSet);
 }
 
-function ensureOutbound(outbounds, expectedOutbound) {
+function ensureOutbound(outbounds, expectedOutbound, options = {}) {
   if (outbounds.some(item => item?.tag === expectedOutbound.tag)) {
     return;
   }
-  outbounds.push(expectedOutbound);
+
+  const normalizedOutbound = { ...expectedOutbound };
+  const beforeTags = Array.isArray(options.beforeTags) ? options.beforeTags.filter(Boolean) : [];
+  if (beforeTags.length > 0) {
+    const anchorIndex = outbounds.findIndex(item => beforeTags.includes(item?.tag));
+    if (anchorIndex >= 0) {
+      outbounds.splice(anchorIndex, 0, normalizedOutbound);
+      return;
+    }
+  }
+
+  if (['selector', 'urltest'].includes(normalizedOutbound.type)) {
+    let insertIndex = -1;
+    for (let i = 0; i < outbounds.length; i += 1) {
+      if (['selector', 'urltest'].includes(outbounds[i]?.type)) {
+        insertIndex = i + 1;
+      }
+    }
+
+    if (insertIndex >= 0) {
+      outbounds.splice(insertIndex, 0, normalizedOutbound);
+      return;
+    }
+  }
+
+  outbounds.push(normalizedOutbound);
 }
 
 function isDnsRuleEqual(left, right) {
@@ -541,8 +688,7 @@ function injectProxiesByGroupRules(config, proxies) {
     '🇰🇷 韩国节点': p => /🇰🇷|Korea|韩国|韩/i.test(p.tag) && !/landing/i.test(p.tag),
     '🗽美国节点': p => /🇺🇸|美国|美|United States/i.test(p.tag) && !/landing/i.test(p.tag),
     '🏠回家节点': p => /home/i.test(p.tag) && !/landing/i.test(p.tag),
-    '🕹️游戏节点': p => /game/i.test(p.tag) && !/landing/i.test(p.tag),
-    '⭐NovaStar': p => /novastar/i.test(p.tag) && !/landing/i.test(p.tag)
+    '🕹️游戏节点': p => /game/i.test(p.tag) && !/landing/i.test(p.tag)
   };
 
   const outboundsMap = new Map((config.outbounds || []).map(outbound => [outbound.tag, outbound]));
@@ -668,7 +814,7 @@ function applyProfile(config, profile) {
   route.rule_set = (route.rule_set || []).filter(item => !removedRuleSetTags.has(item?.tag));
   config.route = route;
 
-  cleanupOutboundReferences(config.outbounds);
+  ConfigOps.cleanupOutboundReferences(config.outbounds);
 }
 
 function normalizeRuleSet(rule, removedRuleSetTags) {
