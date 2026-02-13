@@ -50,7 +50,7 @@ const scenarios = [
       profile: 'company',
       collection: 'dummy',
       novastar_hosts: 'true',
-      tailscale: 'true,ts-host',
+      tailscale: 'true,ts-ep',
       selector_outbound: '🏠回家节点:ts-ep,⭐NovaStar:novastar',
       relay_map: 'nova:all'
     }

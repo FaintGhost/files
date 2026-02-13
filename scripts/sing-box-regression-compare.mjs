@@ -74,7 +74,7 @@ const scenarios = [
       profile: 'company',
       collection: 'dummy',
       novastar_hosts: 'true',
-      tailscale: 'true',
+      tailscale: 'false',
       selector_outbound: '🏠回家节点:ts-ep,⭐NovaStar:novastar',
       relay_map: 'nova:all'
     },
@@ -87,7 +87,7 @@ const scenarios = [
       profile: 'home',
       collection: 'dummy',
       novastar_hosts: 'false',
-      tailscale: 'true'
+      tailscale: 'false'
     },
     proxies
   },
@@ -98,7 +98,7 @@ const scenarios = [
       profile: 'op',
       collection: 'dummy',
       novastar_hosts: 'false',
-      tailscale: 'true'
+      tailscale: 'false'
     },
     proxies
   },
@@ -109,7 +109,7 @@ const scenarios = [
       profile: 'company',
       collection: 'dummy',
       novastar_hosts: 'true',
-      tailscale: 'true',
+      tailscale: 'false',
       selector_outbound: '🏠回家节点:ts-ep,⭐NovaStar:novastar',
       relay_map: 'nova:all'
     },

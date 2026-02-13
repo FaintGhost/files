@@ -588,12 +588,9 @@ function parseTailscaleOption(rawValue) {
     return { enabled: false };
   }
 
-  const parts = String(rawValue)
-    .split(',')
-    .map(item => item.trim())
-    .filter(Boolean);
+  const parts = String(rawValue).split(',').map(item => item.trim());
 
-  if (parts.length === 0) {
+  if (parts.every(item => item === '')) {
     return { enabled: false };
   }
 
@@ -602,10 +599,18 @@ function parseTailscaleOption(rawValue) {
     return { enabled: false };
   }
 
-  const hostname = parts[1] ? parts[1] : undefined;
+  if (parts.length !== 2) {
+    throw new Error('配置非法：tailscale 参数格式必须为 true,<tag>');
+  }
+
+  const tag = parseString(parts[1]);
+  if (!tag) {
+    throw new Error('配置非法：tailscale 参数格式必须为 true,<tag>，且 tag 不能为空');
+  }
+
   return {
     enabled: true,
-    hostname
+    tag
   };
 }
 
@@ -616,15 +621,21 @@ function applyTailscaleEndpoint(config, tailscaleOption) {
 
   config.endpoints = Array.isArray(config.endpoints) ? config.endpoints : [];
 
-  const endpoint = { ...TAILSCALE_ENDPOINT_TEMPLATE };
+  const endpoint = {
+    ...TAILSCALE_ENDPOINT_TEMPLATE,
+    tag: tailscaleOption.tag,
+    hostname: tailscaleOption.tag
+  };
 
-  if (tailscaleOption.hostname) {
-    endpoint.hostname = tailscaleOption.hostname;
-  }
+  const existedIndex = config.endpoints.findIndex(item => item?.tag === tailscaleOption.tag);
+  const fallbackIndex = config.endpoints.findIndex(
+    item => item?.tag === TAILSCALE_ENDPOINT_TEMPLATE.tag || item?.type === TAILSCALE_ENDPOINT_TEMPLATE.type
+  );
 
-  const existedIndex = config.endpoints.findIndex(item => item?.tag === TAILSCALE_ENDPOINT_TEMPLATE.tag);
   if (existedIndex >= 0) {
     config.endpoints[existedIndex] = endpoint;
+  } else if (fallbackIndex >= 0) {
+    config.endpoints[fallbackIndex] = endpoint;
   } else {
     config.endpoints.push(endpoint);
   }

@@ -17,7 +17,7 @@ const args = {
   collection: 'dummy',
   selector_outbound: '🏠回家节点:ts-ep,⭐NovaStar:novastar',
   novastar_hosts: 'true',
-  tailscale: 'true'
+  tailscale: 'true,ts-ep'
 };
 
 const proxies = [
