@@ -31,6 +31,10 @@ const NOVASTAR_HOSTS = {
 const NOVASTAR_INTERNAL_RULE_SET_TAG = 'geosite-novastar-internal';
 const NOVASTAR_DNS_DOMAIN_SUFFIXES = Object.freeze(['novastar.tech']);
 const NOVASTAR_DIRECT_DOMAIN_SUFFIXES = Object.freeze(['novastar-led.cn', 'pingjl.com', 'pingboss.com']);
+const TAG_NODE_SELECTOR = '➡️节点选择';
+const TAG_CUSTOM_DIRECT = '自定义直连';
+const DNS_SERVER_LOCAL = 'localDns';
+const DNS_SERVER_PROXY = 'proxyDns';
 
 const ConfigOps = {
   ensureDnsRule,
@@ -74,7 +78,7 @@ const RELAY_ALIAS_MAP = Object.freeze({
   landing: '🛬落地节点',
   front: '🚪前置节点',
   pre: '🚪前置节点',
-  all: '➡️节点选择',
+  all: TAG_NODE_SELECTOR,
   auto: '🔄自动测速',
   hk: '🧧香港节点',
   tw: '🧋台湾节点',
@@ -115,6 +119,40 @@ const TUN_OVERRIDE_PARSERS = Object.freeze({
   domain_strategy: parseString,
   auto_redirect: parseBoolean
 });
+
+const PROFILE_DNS_RULE_TEMPLATES = Object.freeze([
+  Object.freeze({
+    rule_set: 'geosite-category-ads-all',
+    action: 'predefined',
+    rcode: 'NOERROR'
+  }),
+  Object.freeze({
+    rule_set: 'geosite-cn',
+    action: 'route',
+    server: DNS_SERVER_LOCAL
+  }),
+  Object.freeze({
+    rule_set: Object.freeze(['geosite-github', 'geosite-container', 'geosite-docker']),
+    action: 'route',
+    server: DNS_SERVER_PROXY,
+    strategy: 'ipv4_only'
+  }),
+  Object.freeze({
+    clash_mode: 'direct',
+    action: 'route',
+    server: DNS_SERVER_LOCAL
+  }),
+  Object.freeze({
+    clash_mode: 'global',
+    action: 'route',
+    server: DNS_SERVER_PROXY
+  }),
+  Object.freeze({
+    rule_set: 'geosite-geolocation-!cn',
+    action: 'route',
+    server: DNS_SERVER_PROXY
+  })
+]);
 
 const Runtime = {
   createContext(env) {
@@ -346,7 +384,7 @@ function applyEnabledNovastar(context) {
   ConfigOps.ensureDnsRule(dns.rules, {
     domain_suffix: [...NOVASTAR_DNS_DOMAIN_SUFFIXES],
     action: 'route',
-    server: 'proxyDns'
+    server: DNS_SERVER_PROXY
   }, 2);
 
   ConfigOps.ensureOutbound(
@@ -839,7 +877,7 @@ function applyProfile(config, profile) {
   const removedRuleSetTags = new Set(PROFILE_REMOVED_RULE_SET_TAGS);
 
   if (config.experimental?.clash_api) {
-    config.experimental.clash_api.external_ui_download_detour = '➡️节点选择';
+    config.experimental.clash_api.external_ui_download_detour = TAG_NODE_SELECTOR;
   }
 
   const dns = config.dns || {};
@@ -866,39 +904,24 @@ function applyProfile(config, profile) {
 }
 
 function buildProfileDnsRules() {
-  return [
-    {
-      rule_set: 'geosite-category-ads-all',
-      action: 'predefined',
-      rcode: 'NOERROR'
-    },
-    {
-      rule_set: 'geosite-cn',
-      action: 'route',
-      server: 'localDns'
-    },
-    {
-      rule_set: ['geosite-github', 'geosite-container', 'geosite-docker'],
-      action: 'route',
-      server: 'proxyDns',
-      strategy: 'ipv4_only'
-    },
-    {
-      clash_mode: 'direct',
-      action: 'route',
-      server: 'localDns'
-    },
-    {
-      clash_mode: 'global',
-      action: 'route',
-      server: 'proxyDns'
-    },
-    {
-      rule_set: 'geosite-geolocation-!cn',
-      action: 'route',
-      server: 'proxyDns'
-    }
-  ];
+  return PROFILE_DNS_RULE_TEMPLATES.map(cloneRuleTemplate);
+}
+
+function cloneRuleTemplate(rule) {
+  const cloned = { ...rule };
+  if (Array.isArray(rule?.rule_set)) {
+    cloned.rule_set = [...rule.rule_set];
+  }
+  if (Array.isArray(rule?.domain_suffix)) {
+    cloned.domain_suffix = [...rule.domain_suffix];
+  }
+  if (Array.isArray(rule?.domain_keyword)) {
+    cloned.domain_keyword = [...rule.domain_keyword];
+  }
+  if (Array.isArray(rule?.port)) {
+    cloned.port = [...rule.port];
+  }
+  return cloned;
 }
 
 function buildProfileRouteRules(routeRules, removedOutboundTags, removedRuleSetTags) {
@@ -912,7 +935,7 @@ function mapGlobalModeRuleToNodeSelector(rule) {
   if (rule?.clash_mode === 'global') {
     return {
       ...rule,
-      outbound: '➡️节点选择'
+      outbound: TAG_NODE_SELECTOR
     };
   }
   return rule;
@@ -979,14 +1002,14 @@ function ensureOpRules(rules) {
   if (!rules.some(rule => isTailscaleRule(rule))) {
     rules.splice(4, 0, {
       domain_keyword: [...OP_TAILSCALE_KEYWORDS],
-      outbound: '自定义直连'
+      outbound: TAG_CUSTOM_DIRECT
     });
   }
 
   if (!rules.some(rule => isTailscalePortRule(rule))) {
     rules.splice(5, 0, {
       port: [...OP_TAILSCALE_PORTS],
-      outbound: '自定义直连'
+      outbound: TAG_CUSTOM_DIRECT
     });
   }
 }
@@ -996,11 +1019,11 @@ function isOpExtraRule(rule) {
 }
 
 function isTailscaleRule(rule) {
-  return rule?.outbound === '自定义直连' && containsAny(rule.domain_keyword, OP_TAILSCALE_KEYWORDS);
+  return rule?.outbound === TAG_CUSTOM_DIRECT && containsAny(rule.domain_keyword, OP_TAILSCALE_KEYWORDS);
 }
 
 function isTailscalePortRule(rule) {
-  if (rule?.outbound !== '自定义直连') {
+  if (rule?.outbound !== TAG_CUSTOM_DIRECT) {
     return false;
   }
   return OP_TAILSCALE_PORTS.every(port => Array.isArray(rule.port) && rule.port.includes(port));
