@@ -31,10 +31,20 @@ const NOVASTAR_HOSTS = {
 const NOVASTAR_INTERNAL_RULE_SET_TAG = 'geosite-novastar-internal';
 const NOVASTAR_DNS_DOMAIN_SUFFIXES = Object.freeze(['novastar.tech']);
 const NOVASTAR_DIRECT_DOMAIN_SUFFIXES = Object.freeze(['novastar-led.cn', 'pingjl.com', 'pingboss.com']);
+const NOVASTAR_RULE_INSERT_INDEXES = Object.freeze({
+  DNS_INTERNAL_RULE_SET: 1,
+  DNS_DOMAIN_SUFFIXES: 2,
+  ROUTE_DIRECT_DOMAIN_SUFFIXES: 5,
+  ROUTE_INTERNAL_RULE_SET: 10
+});
 const TAG_NODE_SELECTOR = '➡️节点选择';
 const TAG_CUSTOM_DIRECT = '自定义直连';
 const DNS_SERVER_LOCAL = 'localDns';
 const DNS_SERVER_PROXY = 'proxyDns';
+const OP_RULE_INSERT_INDEXES = Object.freeze({
+  TAILSCALE_DOMAIN_RULE: 4,
+  TAILSCALE_PORT_RULE: 5
+});
 
 const ConfigOps = {
   ensureDnsRule,
@@ -153,6 +163,38 @@ const PROFILE_DNS_RULE_TEMPLATES = Object.freeze([
     server: DNS_SERVER_PROXY
   })
 ]);
+
+const NOVASTAR_DNS_RULE_TEMPLATES = Object.freeze([
+  Object.freeze({
+    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
+    action: 'route',
+    server: 'hosts'
+  }),
+  Object.freeze({
+    domain_suffix: Object.freeze([...NOVASTAR_DNS_DOMAIN_SUFFIXES]),
+    action: 'route',
+    server: DNS_SERVER_PROXY
+  })
+]);
+
+const NOVASTAR_ROUTE_RULE_TEMPLATES = Object.freeze([
+  Object.freeze({
+    domain_suffix: Object.freeze([...NOVASTAR_DIRECT_DOMAIN_SUFFIXES]),
+    outbound: 'direct'
+  }),
+  Object.freeze({
+    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
+    outbound: '⭐NovaStar'
+  })
+]);
+
+const NOVASTAR_ROUTE_RULE_SET_TEMPLATE = Object.freeze({
+  tag: NOVASTAR_INTERNAL_RULE_SET_TAG,
+  type: 'remote',
+  format: 'source',
+  url: 'https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json',
+  download_detour: '⬆️出站节点'
+});
 
 const Runtime = {
   createContext(env) {
@@ -375,17 +417,19 @@ function createNovastarContext(config) {
 
 function applyEnabledNovastar(context) {
   const { dns, route, outbounds } = context;
+  const templates = buildNovastarEnabledTemplates();
+
   upsertHostsServer(dns, NOVASTAR_HOSTS);
-  ConfigOps.ensureDnsRule(dns.rules, {
-    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
-    action: 'route',
-    server: 'hosts'
-  }, 1);
-  ConfigOps.ensureDnsRule(dns.rules, {
-    domain_suffix: [...NOVASTAR_DNS_DOMAIN_SUFFIXES],
-    action: 'route',
-    server: DNS_SERVER_PROXY
-  }, 2);
+  ConfigOps.ensureDnsRule(
+    dns.rules,
+    templates.dnsRules[0],
+    NOVASTAR_RULE_INSERT_INDEXES.DNS_INTERNAL_RULE_SET
+  );
+  ConfigOps.ensureDnsRule(
+    dns.rules,
+    templates.dnsRules[1],
+    NOVASTAR_RULE_INSERT_INDEXES.DNS_DOMAIN_SUFFIXES
+  );
 
   ConfigOps.ensureOutbound(
     outbounds,
@@ -399,22 +443,26 @@ function applyEnabledNovastar(context) {
     }
   );
 
-  ConfigOps.ensureRouteRule(route.rules, {
-    domain_suffix: [...NOVASTAR_DIRECT_DOMAIN_SUFFIXES],
-    outbound: 'direct'
-  }, 5);
-  ConfigOps.ensureRouteRule(route.rules, {
-    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
-    outbound: '⭐NovaStar'
-  }, 10);
+  ConfigOps.ensureRouteRule(
+    route.rules,
+    templates.routeRules[0],
+    NOVASTAR_RULE_INSERT_INDEXES.ROUTE_DIRECT_DOMAIN_SUFFIXES
+  );
+  ConfigOps.ensureRouteRule(
+    route.rules,
+    templates.routeRules[1],
+    NOVASTAR_RULE_INSERT_INDEXES.ROUTE_INTERNAL_RULE_SET
+  );
 
-  ConfigOps.ensureRuleSet(route.rule_set, {
-    tag: NOVASTAR_INTERNAL_RULE_SET_TAG,
-    type: 'remote',
-    format: 'source',
-    url: 'https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json',
-    download_detour: '⬆️出站节点'
-  });
+  ConfigOps.ensureRuleSet(route.rule_set, templates.ruleSet);
+}
+
+function buildNovastarEnabledTemplates() {
+  return {
+    dnsRules: NOVASTAR_DNS_RULE_TEMPLATES.map(cloneRuleTemplate),
+    routeRules: NOVASTAR_ROUTE_RULE_TEMPLATES.map(cloneRuleTemplate),
+    ruleSet: cloneRuleTemplate(NOVASTAR_ROUTE_RULE_SET_TEMPLATE)
+  };
 }
 
 function applyDisabledNovastar(context) {
@@ -1000,14 +1048,14 @@ function isLegacySingBoxPortRule(rule) {
 
 function ensureOpRules(rules) {
   if (!rules.some(rule => isTailscaleRule(rule))) {
-    rules.splice(4, 0, {
+    rules.splice(OP_RULE_INSERT_INDEXES.TAILSCALE_DOMAIN_RULE, 0, {
       domain_keyword: [...OP_TAILSCALE_KEYWORDS],
       outbound: TAG_CUSTOM_DIRECT
     });
   }
 
   if (!rules.some(rule => isTailscalePortRule(rule))) {
-    rules.splice(5, 0, {
+    rules.splice(OP_RULE_INSERT_INDEXES.TAILSCALE_PORT_RULE, 0, {
       port: [...OP_TAILSCALE_PORTS],
       outbound: TAG_CUSTOM_DIRECT
     });
