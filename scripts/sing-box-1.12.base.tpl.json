@@ -412,6 +412,12 @@
         "outbound": "🛑AdBlock"
       },
       {
+        "ip_cidr": [
+          "138.2.120.214/32"
+        ],
+        "outbound": "direct"
+      },
+      {
         "type": "logical",
         "mode": "and",
         "rules": [
