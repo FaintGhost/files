@@ -25,7 +25,9 @@ const NOVASTAR_HOSTS = {
   'alm.novatools.vip': '172.16.81.11',
   'ai-meeting.novastar.tech': '172.16.91.232',
   'e-bridge.novastar.tech': '172.16.91.42',
-  'ai-portal.novastar.tech': '172.16.91.232'
+  'ai-portal.novastar.tech': '172.16.91.232',
+  'ai.service.novastar.tech': '172.16.80.38',
+  'ai.novatools.vip': '172.16.22.129'
 };
 
 const NOVASTAR_INTERNAL_RULE_SET_TAG = 'geosite-novastar-internal';
