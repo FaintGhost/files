@@ -192,8 +192,8 @@ const NOVASTAR_ROUTE_RULE_SET_TEMPLATE = Object.freeze({
   tag: NOVASTAR_INTERNAL_RULE_SET_TAG,
   type: 'remote',
   format: 'source',
-  url: 'https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json',
-  download_detour: '⬆️出站节点'
+  url: 'https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.json',
+  download_detour: 'direct'
 });
 
 const Runtime = {

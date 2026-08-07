@@ -14,8 +14,7 @@
     },
     "cache_file": {
       "enabled": true,
-      "store_fakeip": true,
-      "store_rdrc": true
+      "store_fakeip": true
     }
   },
   "dns": {
@@ -90,14 +89,12 @@
       "auto_route": true,
       "strict_route": true,
       "endpoint_independent_nat": true,
-      "stack": "system",
-      "domain_strategy": "prefer_ipv4"
+      "stack": "system"
     },
     {
       "type": "mixed",
       "listen": "0.0.0.0",
       "listen_port": 2080,
-      "sniff": true,
       "users": []
     }
   ],
@@ -434,6 +431,11 @@
         "action": "hijack-dns"
       },
       {
+        "inbound": "tun-in",
+        "action": "resolve",
+        "strategy": "prefer_ipv4"
+      },
+      {
         "protocol": "quic",
         "outbound": "🛑AdBlock"
       },
@@ -650,8 +652,8 @@
         "tag": "geosite-novastar-internal",
         "type": "remote",
         "format": "source",
-        "url": "https://raw.githubusercontent.com/FaintGhost/files/refs/heads/rm/scripts/novastar.json",
-        "download_detour": "⬆️出站节点"
+        "url": "https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.json",
+        "download_detour": "direct"
       },
       {
         "tag": "geosite-game",
