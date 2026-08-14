@@ -20,14 +20,6 @@
   "dns": {
     "servers": [
       {
-        "domain_suffix": [
-          "adobe.io",
-          "adobestats.io"
-        ],
-        "action": "predefined",
-        "rcode": "NXDOMAIN"
-      },
-      {
         "tag": "proxyDns",
         "type": "tls",
         "server": "1.1.1.1",
@@ -45,6 +37,14 @@
       }
     ],
     "rules": [
+      {
+        "domain_suffix": [
+          "adobe.io",
+          "adobestats.io"
+        ],
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
+      },
       {
         "rule_set": "geosite-category-ads-all",
         "action": "predefined",
