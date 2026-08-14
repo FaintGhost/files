@@ -20,6 +20,14 @@
   "dns": {
     "servers": [
       {
+        "domain_suffix": [
+          "adobe.io",
+          "adobestats.io"
+        ],
+        "action": "predefined",
+        "rcode": "NXDOMAIN"
+      },
+      {
         "tag": "proxyDns",
         "type": "tls",
         "server": "1.1.1.1",
@@ -465,13 +473,6 @@
           "192.168.50.0/24"
         ],
         "outbound": "🏠回家节点"
-      },
-      {
-        "domain_suffix": [
-          "adobe.io",
-          "adobestats.io"
-        ],
-        "outbound": "🛑AdBlock"
       },
       {
         "rule_set": [
