@@ -430,6 +430,19 @@
         "outbound": "⬆️出站节点"
       },
       {
+        "ip_cidr": [
+          "192.200.0.0/24"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "tailscale.com",
+          "tailscale.net"
+        ],
+        "outbound": "direct"
+      },
+      {
         "type": "logical",
         "mode": "and",
         "rules": [
