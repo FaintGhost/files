@@ -5,7 +5,6 @@
       "domain": [
         "ehr.novastar.tech",
         "oa.novastar.tech",
-        "pwd.novastar.tech",
         "iam-idp.novastar.tech",
         "iam.novastar.tech",
         "ai.novaops.tech",
@@ -16,8 +15,7 @@
         "ai-portal.novastar.tech",
         "ai.service.novastar.tech",
         "ai.novatools.vip",
-        "uaudit.novastar.tech",
-        "ai-service.novastar.tech"
+        "uaudit.novastar.tech"
       ]
     }
   ]

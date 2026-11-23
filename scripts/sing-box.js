@@ -2,6 +2,22 @@ async function main(env) {
   const ctx = Runtime.createContext(env);
   await ProxySource.load(ctx);
   Pipeline.run(ctx);
+  if (FeatureFacade.novastar.resolveEnabled(ctx.args, ctx.profile)) {
+    // Public company services must precede inherited Tailscale split DNS.
+    const publicDirect = ['npan.novastar.tech', 'doc-wps.novastar.tech'];
+    // These answer RFC1918 to Chinese resolvers while their public addresses work
+    // from abroad, so resolve them through the proxy DNS and keep them on the proxy.
+    const publicProxy = ['pwd.novastar.tech', 'ai-service.novastar.tech'];
+    const { dns, route } = ctx.config;
+    dns.rules.unshift(
+      { domain: [...publicDirect, ...publicProxy], query_type: 'AAAA', action: 'predefined', rcode: 'NOERROR' },
+      { domain: publicDirect, action: 'route', server: DNS_SERVER_LOCAL },
+      { domain: publicProxy, action: 'route', server: DNS_SERVER_PROXY }
+    );
+    route.rules.splice(route.rules.findIndex(rule => rule.action === 'resolve') + 1, 0,
+      { domain: publicDirect, action: 'route', outbound: 'direct' },
+      { domain: publicProxy, action: 'route', outbound: TAG_NODE_SELECTOR });
+  }
   $content = Runtime.serialize(ctx.config);
 }
 
@@ -13,52 +29,49 @@ const ArgParsers = {
   parseNumber
 };
 
-const NOVASTAR_HOSTS = {
-  'oa.novastar.tech': '172.16.81.12',
-  'ehr.novastar.tech': '172.16.80.109',
-  'ai.novaops.tech': '172.16.80.99',
-  'pwd.novastar.tech': '172.16.81.66',
-  'iam-idp.novastar.tech': '172.16.91.27',
-  'iam.novastar.tech': '172.16.91.27',
-  'wiki.novastar.tech': '172.16.81.222',
-  'novaehr.novastar.tech': '172.16.91.76',
-  'alm.novatools.vip': '172.16.81.11',
-  'ai-meeting.novastar.tech': '172.16.91.232',
-  'e-bridge.novastar.tech': '172.16.91.42',
-  'ai-portal.novastar.tech': '172.16.91.232',
-  'ai.service.novastar.tech': '172.16.80.38',
-  'ai.novatools.vip': '172.16.22.129'
-};
 
-const NOVASTAR_INTERNAL_RULE_SET_TAG = 'geosite-novastar-internal';
-const NOVASTAR_DNS_DOMAIN_SUFFIXES = Object.freeze(['novastar.tech']);
+const NOVASTAR_DNS_DOMAIN_SUFFIXES = Object.freeze(['novastar.tech', 'novaops.tech', 'novatools.vip']);
 const NOVASTAR_DIRECT_DOMAIN_SUFFIXES = Object.freeze(['novastar-led.cn', 'pingjl.com', 'pingboss.com']);
+// Kept in the generator so configurations no longer fetch a rule set from GitHub.
+const NOVASTAR_INTERNAL_DOMAINS = Object.freeze([
+  'ehr.novastar.tech',
+  'oa.novastar.tech',
+  'iam-idp.novastar.tech',
+  'iam.novastar.tech',
+  'ai.novaops.tech',
+  'novaehr.novastar.tech',
+  'wiki.novastar.tech',
+  'alm.novatools.vip',
+  'ai-meeting.novastar.tech',
+  'ai-portal.novastar.tech',
+  'ai.service.novastar.tech',
+  'ai.novatools.vip',
+  'uaudit.novastar.tech'
+]);
 const NOVASTAR_RULE_INSERT_INDEXES = Object.freeze({
   DNS_INTERNAL_RULE_SET: 1,
   DNS_DOMAIN_SUFFIXES: 2,
-  ROUTE_DIRECT_DOMAIN_SUFFIXES: 5,
-  ROUTE_INTERNAL_RULE_SET: 10
+  ROUTE_DIRECT_DOMAIN_SUFFIXES: 7,
+  ROUTE_INTERNAL_RULE_SET: 11
 });
 const TAG_NODE_SELECTOR = '➡️节点选择';
 const TAG_CUSTOM_DIRECT = '自定义直连';
 const DNS_SERVER_LOCAL = 'localDns';
 const DNS_SERVER_PROXY = 'proxyDns';
 const OP_RULE_INSERT_INDEXES = Object.freeze({
-  TAILSCALE_DOMAIN_RULE: 4,
-  TAILSCALE_PORT_RULE: 5
+  TAILSCALE_DOMAIN_RULE: 6,
+  TAILSCALE_PORT_RULE: 7
 });
 
 const ConfigOps = {
   ensureDnsRule,
   ensureRouteRule,
-  ensureRuleSet,
   ensureOutbound,
   cleanupOutboundReferences
 };
 
 const PROFILE_REMOVED_OUTBOUND_TAGS = Object.freeze([
   '⭐NovaStar',
-  '🏠回家节点',
   '🕹️游戏节点',
   '🦅美国原生'
 ]);
@@ -82,7 +95,6 @@ const PROXY_GROUP_RULES = Object.freeze({
   '⛩️日本节点': p => /🇯🇵|JP|jp|日本|日|Japan/i.test(p.tag) && !/landing|game/i.test(p.tag),
   '🇰🇷 韩国节点': p => /🇰🇷|Korea|韩国|韩/i.test(p.tag) && !/landing/i.test(p.tag),
   '🗽美国节点': p => /🇺🇸|美国|美|United States/i.test(p.tag) && !/landing/i.test(p.tag),
-  '🏠回家节点': p => /home/i.test(p.tag) && !/landing/i.test(p.tag),
   '🕹️游戏节点': p => /game/i.test(p.tag) && !/landing/i.test(p.tag)
 });
 
@@ -97,7 +109,6 @@ const RELAY_ALIAS_MAP = Object.freeze({
   sg: '🦁狮城节点',
   jp: '⛩️日本节点',
   us: '🗽美国节点',
-  home: '🏠回家节点',
   game: '🕹️游戏节点',
   nova: '⭐NovaStar',
   novastar: '⭐NovaStar',
@@ -126,9 +137,7 @@ const TUN_OVERRIDE_PARSERS = Object.freeze({
   mtu: parseNumber,
   auto_route: parseBoolean,
   strict_route: parseBoolean,
-  endpoint_independent_nat: parseBoolean,
   stack: parseString,
-  domain_strategy: parseString,
   auto_redirect: parseBoolean
 });
 
@@ -146,8 +155,7 @@ const PROFILE_DNS_RULE_TEMPLATES = Object.freeze([
   Object.freeze({
     rule_set: Object.freeze(['geosite-github', 'geosite-container', 'geosite-docker']),
     action: 'route',
-    server: DNS_SERVER_PROXY,
-    strategy: 'ipv4_only'
+    server: DNS_SERVER_PROXY
   }),
   Object.freeze({
     clash_mode: 'direct',
@@ -168,14 +176,14 @@ const PROFILE_DNS_RULE_TEMPLATES = Object.freeze([
 
 const NOVASTAR_DNS_RULE_TEMPLATES = Object.freeze([
   Object.freeze({
-    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
+    domain: Object.freeze([...NOVASTAR_INTERNAL_DOMAINS]),
     action: 'route',
-    server: 'hosts'
+    server: 'companyDns'
   }),
   Object.freeze({
     domain_suffix: Object.freeze([...NOVASTAR_DNS_DOMAIN_SUFFIXES]),
     action: 'route',
-    server: DNS_SERVER_PROXY
+    server: 'companyDns'
   })
 ]);
 
@@ -185,18 +193,15 @@ const NOVASTAR_ROUTE_RULE_TEMPLATES = Object.freeze([
     outbound: 'direct'
   }),
   Object.freeze({
-    rule_set: NOVASTAR_INTERNAL_RULE_SET_TAG,
+    wifi_ssid: Object.freeze(['Make Nova Great Again']),
+    domain: Object.freeze([...NOVASTAR_INTERNAL_DOMAINS]),
+    outbound: 'direct'
+  }),
+  Object.freeze({
+    domain: Object.freeze([...NOVASTAR_INTERNAL_DOMAINS]),
     outbound: '⭐NovaStar'
   })
 ]);
-
-const NOVASTAR_ROUTE_RULE_SET_TEMPLATE = Object.freeze({
-  tag: NOVASTAR_INTERNAL_RULE_SET_TAG,
-  type: 'remote',
-  format: 'source',
-  url: 'https://testingcf.jsdelivr.net/gh/FaintGhost/files@rm/scripts/novastar.json',
-  download_detour: 'direct'
-});
 
 const Runtime = {
   createContext(env) {
@@ -261,6 +266,14 @@ const FeatureFacade = {
     run(ctx) {
       const enabled = this.resolveEnabled(ctx.args, ctx.profile);
       applyNovastarFeatures(ctx.config, enabled);
+      const server = parseString(ctx.args.novastar_server);
+      if (server) {
+        const proxy = ctx.proxies.find(item => item.tag === 'novastar');
+        if (!proxy?.server) {
+          throw new Error('配置非法：novastar_server 需要订阅中存在 novastar 节点');
+        }
+        proxy.server = server;
+      }
     }
   },
   tailscale: {
@@ -268,7 +281,7 @@ const FeatureFacade = {
       return parseTailscaleOption(args.tailscale);
     },
     run(ctx) {
-      applyTailscaleEndpoint(ctx.config, this.parse(ctx.args));
+      applyTailscaleEndpoint(ctx.config, this.parse(ctx.args), ctx.args);
     }
   },
   tun: {
@@ -298,8 +311,8 @@ const PIPELINE_STEPS = [
   FeatureFacade.proxyGroup,
   FeatureFacade.profile,
   FeatureFacade.novastar,
-  FeatureFacade.tailscale,
   FeatureFacade.tun,
+  FeatureFacade.tailscale,
   FeatureFacade.selectorOutbound,
   FeatureFacade.relay
 ];
@@ -380,14 +393,9 @@ async function buildProxies({ collectionName, subscriptionNames, producer }) {
 }
 
 function resolveNovastarEnabled(args, profile) {
-  const parsed = parseBoolean(args.novastar_hosts);
+  const parsed = parseBoolean(args.novastar);
   if (parsed !== undefined) {
     return parsed;
-  }
-
-  const parsedAlias = parseBoolean(args.novastar);
-  if (parsedAlias !== undefined) {
-    return parsedAlias;
   }
 
   return profile === 'company';
@@ -421,7 +429,7 @@ function applyEnabledNovastar(context) {
   const { dns, route, outbounds } = context;
   const templates = buildNovastarEnabledTemplates();
 
-  upsertHostsServer(dns, NOVASTAR_HOSTS);
+  dns.servers.push({ type: 'udp', tag: 'companyDns', server: '100.106.56.51' });
   ConfigOps.ensureDnsRule(
     dns.rules,
     templates.dnsRules[0],
@@ -441,7 +449,7 @@ function applyEnabledNovastar(context) {
       outbounds: ['direct']
     },
     {
-      beforeTags: ['🦅美国原生', '🏠回家节点']
+      beforeTags: ['🦅美国原生']
     }
   );
 
@@ -455,26 +463,32 @@ function applyEnabledNovastar(context) {
     templates.routeRules[1],
     NOVASTAR_RULE_INSERT_INDEXES.ROUTE_INTERNAL_RULE_SET
   );
-
-  ConfigOps.ensureRuleSet(route.rule_set, templates.ruleSet);
+  ConfigOps.ensureRouteRule(
+    route.rules,
+    templates.routeRules[2],
+    NOVASTAR_RULE_INSERT_INDEXES.ROUTE_INTERNAL_RULE_SET + 1
+  );
 }
 
 function buildNovastarEnabledTemplates() {
   return {
     dnsRules: NOVASTAR_DNS_RULE_TEMPLATES.map(cloneRuleTemplate),
-    routeRules: NOVASTAR_ROUTE_RULE_TEMPLATES.map(cloneRuleTemplate),
-    ruleSet: cloneRuleTemplate(NOVASTAR_ROUTE_RULE_SET_TEMPLATE)
+    routeRules: NOVASTAR_ROUTE_RULE_TEMPLATES.map(cloneRuleTemplate)
   };
 }
 
 function applyDisabledNovastar(context) {
   const { dns, route } = context;
-  dns.servers = dns.servers.filter(server => server?.tag !== 'hosts');
+  dns.servers = dns.servers.filter(server => server?.tag !== 'companyDns');
   dns.rules = dns.rules.filter(rule => {
-    if (rule?.server === 'hosts') {
+    if (rule?.server === 'companyDns') {
       return false;
     }
-    if (rule?.rule_set === NOVASTAR_INTERNAL_RULE_SET_TAG) {
+    // Legacy tag from configurations generated before the domain list was inlined.
+    if (rule?.rule_set === 'geosite-novastar-internal') {
+      return false;
+    }
+    if (containsAny(rule?.domain, NOVASTAR_INTERNAL_DOMAINS)) {
       return false;
     }
     if (containsAny(rule?.domain_suffix, NOVASTAR_DNS_DOMAIN_SUFFIXES)) {
@@ -483,13 +497,16 @@ function applyDisabledNovastar(context) {
     return true;
   });
 
-  context.outbounds = context.outbounds.filter(outbound => outbound?.tag !== '⭐NovaStar');
+  context.outbounds = context.outbounds.filter(outbound => !/novastar/i.test(outbound?.tag || ''));
 
   route.rules = route.rules.filter(rule => {
-    if (rule?.rule_set === NOVASTAR_INTERNAL_RULE_SET_TAG) {
+    if (rule?.rule_set === 'geosite-novastar-internal') {
       return false;
     }
     if (rule?.outbound === '⭐NovaStar') {
+      return false;
+    }
+    if (containsAny(rule?.domain, NOVASTAR_INTERNAL_DOMAINS)) {
       return false;
     }
     if (containsAny(rule?.domain_suffix, NOVASTAR_DIRECT_DOMAIN_SUFFIXES)) {
@@ -498,7 +515,7 @@ function applyDisabledNovastar(context) {
     return true;
   });
 
-  route.rule_set = route.rule_set.filter(item => item?.tag !== NOVASTAR_INTERNAL_RULE_SET_TAG);
+  route.rule_set = route.rule_set.filter(item => item?.tag !== 'geosite-novastar-internal');
 }
 
 function finalizeNovastarContext(config, context) {
@@ -508,21 +525,6 @@ function finalizeNovastarContext(config, context) {
   ConfigOps.cleanupOutboundReferences(config.outbounds);
 }
 
-function upsertHostsServer(dns, predefined) {
-  let hostsServer = dns.servers.find(server => server?.tag === 'hosts');
-  if (!hostsServer) {
-    hostsServer = {
-      type: 'hosts',
-      tag: 'hosts',
-      predefined: {}
-    };
-    dns.servers.push(hostsServer);
-  }
-
-  hostsServer.type = 'hosts';
-  hostsServer.tag = 'hosts';
-  hostsServer.predefined = { ...predefined };
-}
 
 function ensureDnsRule(rules, expectedRule, preferredIndex) {
   if (rules.some(rule => isDnsRuleEqual(rule, expectedRule))) {
@@ -536,13 +538,6 @@ function ensureRouteRule(rules, expectedRule, preferredIndex) {
     return;
   }
   rules.splice(Math.min(preferredIndex, rules.length), 0, expectedRule);
-}
-
-function ensureRuleSet(ruleSets, expectedRuleSet) {
-  if (ruleSets.some(item => item?.tag === expectedRuleSet.tag)) {
-    return;
-  }
-  ruleSets.push(expectedRuleSet);
 }
 
 function ensureOutbound(outbounds, expectedOutbound, options = {}) {
@@ -597,18 +592,14 @@ function parseTailscaleOption(rawValue) {
   }
 
   const enabled = parseBoolean(parts[0]);
-  if (enabled !== true) {
+  if (enabled === false) {
     return { enabled: false };
   }
-
-  if (parts.length !== 2) {
-    throw new Error('配置非法：tailscale 参数格式必须为 true,<tag>');
+  if (enabled !== true || parts.length > 2 || (parts.length === 2 && !parts[1])) {
+    throw new Error('配置非法：tailscale 参数格式必须为 false、true 或 true,<tag>');
   }
 
-  const tag = parseString(parts[1]);
-  if (!tag) {
-    throw new Error('配置非法：tailscale 参数格式必须为 true,<tag>，且 tag 不能为空');
-  }
+  const tag = parts[1] || TAILSCALE_ENDPOINT_TEMPLATE.tag;
 
   return {
     enabled: true,
@@ -616,18 +607,32 @@ function parseTailscaleOption(rawValue) {
   };
 }
 
-function applyTailscaleEndpoint(config, tailscaleOption) {
+function applyTailscaleEndpoint(config, tailscaleOption, args) {
   if (!tailscaleOption?.enabled) {
     return;
   }
 
   config.endpoints = Array.isArray(config.endpoints) ? config.endpoints : [];
 
+  const dnsMode = parseString(args.tailscale_dns) || 'split';
+  if (!['magic', 'split', 'global'].includes(dnsMode)) {
+    throw new Error('配置非法：tailscale_dns 必须为 magic、split 或 global');
+  }
   const endpoint = {
     ...TAILSCALE_ENDPOINT_TEMPLATE,
-    tag: tailscaleOption.tag,
-    hostname: tailscaleOption.tag
+    tag: tailscaleOption.tag
   };
+  const hostname = parseString(args.tailscale_hostname);
+  if (hostname) {
+    endpoint.hostname = hostname;
+  }
+  if (hasOwn(args, 'tailscale_system_interface')) {
+    const enabled = parseBoolean(args.tailscale_system_interface);
+    if (enabled === undefined) {
+      throw new Error('配置非法：tailscale_system_interface 必须为布尔值');
+    }
+    endpoint.system_interface = enabled;
+  }
 
   const existedIndex = config.endpoints.findIndex(item => item?.tag === tailscaleOption.tag);
   const fallbackIndex = config.endpoints.findIndex(
@@ -640,6 +645,79 @@ function applyTailscaleEndpoint(config, tailscaleOption) {
     config.endpoints[fallbackIndex] = endpoint;
   } else {
     config.endpoints.push(endpoint);
+  }
+
+  const dns = config.dns;
+  dns.servers.push({
+    type: 'tailscale',
+    tag: 'tailscaleDns',
+    endpoint: endpoint.tag,
+    accept_default_resolvers: dnsMode === 'global',
+    accept_search_domain: dnsMode !== 'magic'
+  });
+  // Keep public IPv4-only DNS without suppressing tailnet AAAA records.
+  if (dnsMode !== 'global' && dns.strategy === 'ipv4_only') {
+    dns.rules.unshift({ query_type: 'AAAA', action: 'predefined', rcode: 'NOERROR' });
+  }
+  delete dns.strategy;
+  const tailscaleDnsRule = dnsMode === 'global'
+    ? { action: 'route', server: 'tailscaleDns' }
+    : { preferred_by: 'tailscaleDns', action: 'route', server: 'tailscaleDns' };
+  if (dnsMode === 'magic') {
+    tailscaleDnsRule.domain_suffix = ['ts.net'];
+  }
+  dns.rules.unshift(tailscaleDnsRule);
+
+  const rules = config.route.rules;
+  const ipv6Reject = rules.find(rule => rule.ip_version === 6 && rule.action === 'reject');
+  if (ipv6Reject) {
+    delete ipv6Reject.ip_version;
+    Object.assign(ipv6Reject, {
+      type: 'logical',
+      mode: 'and',
+      rules: [
+        { ip_version: 6 },
+        { preferred_by: endpoint.tag, invert: true }
+      ]
+    });
+  }
+  const routingIndex = rules.findIndex(rule => rule.clash_mode);
+  rules.splice(routingIndex < 0 ? rules.length : routingIndex, 0, {
+    type: 'logical',
+    mode: 'and',
+    rules: [
+      { ip_cidr: ['192.168.50.0/24'] },
+      {
+        type: 'logical',
+        mode: 'or',
+        rules: [
+          { wifi_ssid: ['zzz', 'zzz_5G'] },
+          { default_interface_address: ['192.168.50.0/24'] },
+          { network_interface_address: { wifi: ['192.168.50.0/24'] } }
+        ]
+      }
+    ],
+    action: 'route',
+    outbound: 'direct'
+  }, {
+    preferred_by: endpoint.tag,
+    action: 'route',
+    outbound: endpoint.tag
+  });
+  // Peer traffic must not enter the public proxy or be sent back to Tailscale.
+  rules.unshift({ inbound: endpoint.tag, action: 'route', outbound: 'direct' });
+
+  const companyDns = dns.servers.find(server => server.tag === 'companyDns');
+  if (companyDns) {
+    companyDns.detour = endpoint.tag;
+  }
+  const tun = config.inbounds?.find(inbound => inbound.type === 'tun');
+  if (tun) {
+    const addresses = Array.isArray(tun.address) ? [...tun.address] : [tun.address];
+    if (!addresses.some(address => address?.includes(':'))) {
+      addresses.push('fdfe:dcba:9876::1/126');
+    }
+    tun.address = addresses.filter(Boolean);
   }
 }
 
@@ -659,9 +737,14 @@ function applyTunOverrides(config, args) {
       continue;
     }
 
-    tunInbound[key] = parsed;
+    if (key === 'stack' && parsed === 'auto') {
+      delete tunInbound.stack;
+    } else {
+      tunInbound[key] = parsed;
+    }
   }
 }
+
 
 function parseSelectorOutboundMap(rawMap) {
   return parseColonMappings(rawMap, (left, right) => ({
@@ -942,7 +1025,7 @@ function applyProfile(config, profile) {
   }
 
   const dns = config.dns || {};
-  dns.servers = (dns.servers || []).filter(server => server?.tag !== 'hosts');
+  dns.servers = (dns.servers || []).filter(server => server?.tag !== 'companyDns');
   dns.rules = buildProfileDnsRules();
   dns.strategy = 'ipv4_only';
   config.dns = dns;
@@ -954,6 +1037,22 @@ function applyProfile(config, profile) {
 
   if (profile === 'op') {
     ensureOpRules(route.rules);
+    dns.optimistic = { enabled: true, timeout: '30m' };
+    dns.servers.push({ type: 'mdns', tag: 'lanDns' });
+    dns.rules.unshift({
+      preferred_by: 'lanDns',
+      action: 'route',
+      server: 'lanDns',
+      timeout: '1s',
+      disable_optimistic_cache: true
+    });
+    config.experimental = config.experimental || {};
+    config.experimental.cache_file = {
+      ...config.experimental.cache_file,
+      enabled: true,
+      store_dns: true
+    };
+    route.find_neighbor = true;
   } else {
     route.rules = route.rules.filter(rule => !isOpExtraRule(rule));
   }
@@ -970,6 +1069,9 @@ function buildProfileDnsRules() {
 
 function cloneRuleTemplate(rule) {
   const cloned = { ...rule };
+  if (Array.isArray(rule?.domain)) {
+    cloned.domain = [...rule.domain];
+  }
   if (Array.isArray(rule?.rule_set)) {
     cloned.rule_set = [...rule.rule_set];
   }
@@ -1039,6 +1141,10 @@ function shouldRemoveRouteRule(rule, removedOutboundTags, removedRuleSetTags) {
   }
 
   if (containsAny(rule.domain_suffix, NOVASTAR_DIRECT_DOMAIN_SUFFIXES)) {
+    return true;
+  }
+
+  if (containsAny(rule.domain, NOVASTAR_INTERNAL_DOMAINS)) {
     return true;
   }
 
